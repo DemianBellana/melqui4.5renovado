@@ -1,6 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const CategoryCarousel = ({ photos, title, onImageClick, globalOffset }: { 
   photos: string[], 
@@ -47,11 +52,11 @@ const CategoryCarousel = ({ photos, title, onImageClick, globalOffset }: {
 
   if (!isMobile) {
     return (
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="photo-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {photos.map((photo, idx) => (
           <div 
             key={idx} 
-            className="relative aspect-[3/4] overflow-hidden group bg-dark/5 cursor-pointer"
+            className="photo-card relative aspect-[3/4] overflow-hidden group bg-dark/5 cursor-pointer"
             onClick={() => onImageClick(globalOffset + idx)}
           >
             <img 
@@ -126,6 +131,58 @@ const CategoryCarousel = ({ photos, title, onImageClick, globalOffset }: {
 
 const PhotographySection = () => {
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(() => {
+    // Solo aplicar en desktop
+    if (window.innerWidth < 768) return;
+
+    const categoryBlocks = gsap.utils.toArray('.category-block');
+    
+    categoryBlocks.forEach((block: any) => {
+      const title = block.querySelector('.category-title');
+      const cards = block.querySelectorAll('.photo-card');
+
+      // Animación del título de categoría
+      gsap.from(title, {
+        scrollTrigger: {
+          trigger: title,
+          start: 'top 90%',
+          toggleActions: 'play none none reverse'
+        },
+        x: -50,
+        opacity: 0,
+        duration: 1,
+        ease: 'power3.out'
+      });
+
+      // Animación de las fotos (stagger)
+      gsap.from(cards, {
+        scrollTrigger: {
+          trigger: block,
+          start: 'top 80%',
+          toggleActions: 'play none none reverse'
+        },
+        y: 60,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.1,
+        ease: 'power2.out'
+      });
+    });
+
+    // Animación del encabezado de sección
+    gsap.from('.section-header', {
+      scrollTrigger: {
+        trigger: '.section-header',
+        start: 'top 90%',
+      },
+      y: 30,
+      opacity: 0,
+      duration: 1.2,
+      ease: 'power3.out'
+    });
+  }, { scope: sectionRef });
 
   const categories = [
     {
@@ -217,8 +274,8 @@ const PhotographySection = () => {
   let currentGlobalOffset = 0;
 
   return (
-    <section id="photography" className="px-6 py-16 md:px-16 md:py-28 bg-cream overflow-hidden">
-      <div className="text-center mb-16">
+    <section id="photography" ref={sectionRef} className="px-6 py-16 md:px-16 md:py-28 bg-cream overflow-hidden">
+      <div className="section-header text-center mb-16">
         <span className="text-[0.62rem] font-light tracking-[0.28em] uppercase text-accent mb-6">
           03. Photography
         </span>
@@ -232,8 +289,8 @@ const PhotographySection = () => {
           const offset = currentGlobalOffset;
           currentGlobalOffset += cat.photos.length;
           return (
-            <div key={cat.title}>
-              <h3 className="font-serif text-2xl mb-8 border-l-2 border-accent pl-4 text-dark/80">
+            <div key={cat.title} className="category-block">
+              <h3 className="category-title font-serif text-2xl mb-8 border-l-2 border-accent pl-4 text-dark/80">
                 {cat.title}
               </h3>
               <CategoryCarousel 
