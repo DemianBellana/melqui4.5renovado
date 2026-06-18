@@ -40,7 +40,6 @@ const ReelsSection = () => {
 
   return (
     <section id="reels" className="grid grid-cols-1 lg:grid-cols-2 min-h-[90vh] bg-warm-white overflow-hidden">
-
       {/* Columna Izquierda: Texto */}
       <div className="flex flex-col justify-center px-6 py-14 lg:px-20 lg:py-24 bg-cream order-2 lg:order-1 relative z-10">
         <span className="text-[0.62rem] font-light tracking-[0.28em] uppercase text-accent mb-6">
@@ -192,7 +191,6 @@ const ReelsSection = () => {
           </div>
         </motion.div>
       </div>
-
     </section>
   );
 };

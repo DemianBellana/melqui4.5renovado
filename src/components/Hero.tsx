@@ -15,16 +15,15 @@ const Hero = () => {
       duration: 1, stagger: 0.03, ease: 'power3.out', delay: 0.5
     });
     gsap.from('.hero-subtitle', { y: 20, opacity: 0, duration: 1, ease: 'power2.out', delay: 0.3 });
-    gsap.from('.hero-desc',     { y: 20, opacity: 0, duration: 1, ease: 'power2.out', delay: 1.5 });
-    gsap.from('.hero-cta',      { scale: 0.9, opacity: 0, duration: 0.8, ease: 'back.out(1.7)', delay: 1.8 });
-  }, { scope: container });
+    gsap.from('.hero-badge',    { y: 20, opacity: 0, scale: 0.9, duration: 1, ease: 'power2.out', delay: 1.2 });
+    }, { scope: container });
 
-  const renderLetters = (text: string, className: string) =>
+    const renderLetters = (text: string, className: string) =>
     text.split('').map((char, i) => (
       <span key={i} className={`${className} inline-block whitespace-pre`}>{char}</span>
     ));
 
-  return (
+    return (
     <section id="inicio" ref={container} className="h-screen relative flex items-center justify-center overflow-hidden">
       <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover z-0">
         <source src="/herovideo2.mp4" type="video/mp4" />
@@ -44,17 +43,7 @@ const Hero = () => {
             {renderLetters("Content Creator", "char-right")}
           </div>
         </h1>
-        <div className="hero-desc flex justify-center mb-11">
-          <p className="font-sans text-[0.58rem] md:text-[0.7rem] font-medium tracking-[0.18em] md:tracking-[0.22em] uppercase text-dark bg-white/90 backdrop-blur-sm px-6 py-2.5 rounded-full border border-pink-100 shadow-[0_8px_30px_rgba(255,182,193,0.3)] whitespace-nowrap">
-            Dinámica <span className="text-pink-400 mx-1">·</span> Creatividad <span className="text-pink-400 mx-1">·</span> Historias que impactan
-          </p>
-        </div>
-        <a
-          href="#reels"
-          className="hero-cta inline-block text-[0.68rem] font-light tracking-[0.2em] uppercase text-white border border-[rgba(255,255,255,0.55)] px-10 py-4 no-underline transition-all duration-300 hover:bg-[rgba(255,255,255,0.12)] hover:border-[rgba(255,255,255,0.8)]"
-        >
-          Ver Portfolio
-        </a>
+        <div className="hero-badge inline-flex items-center gap-2 sm:gap-3 bg-[#D8B7B0] border border-white/20 rounded-full px-4 py-1.5 sm:px-5 sm:py-1.5 text-[#161616] text-[10px] sm:text-[11px] tracking-[0.05em] sm:tracking-[0.22em] uppercase shadow-lg whitespace-nowrap">Dinámica &amp; Creatividad Historias que impactan <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-[#7C8F7A] animate-pulse"></span></div>
       </div>
 
       {/* Scroll indicator — centrado */}
