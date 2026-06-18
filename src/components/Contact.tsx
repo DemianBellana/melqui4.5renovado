@@ -1,16 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
+import horizontalImg from '../assets/Horizontal.jpg';
 
 const Contact = () => {
-  const [isSent, setIsSent] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSent(true);
-  };
-
   return (
     <section id="contact" className="bg-warm-white px-6 py-16 md:px-16 md:py-28">
-      <div className="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
+      <div className="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
         <div>
           <span className="text-[0.62rem] font-light tracking-[0.28em] uppercase text-accent mb-6">
             Contacto
@@ -75,7 +69,7 @@ const Contact = () => {
                   text-[0.65rem] font-light tracking-[0.22em] uppercase transition-all duration-300
                   shadow-[0_4px_15px_rgba(0,0,0,0.08)] hover:shadow-[0_12px_25px_rgba(0,0,0,0.15)]
                   ${label === 'Instagram' ? 'max-md:text-cream max-md:border-transparent max-md:shadow-[0_10px_25px_rgba(225,48,108,0.3)]' : ''}
-                  ${label === 'TikTok' ? 'max-md:text-cream max-md:border-transparent max-md:shadow-[0_10px_25px_rgba(0,0,0,0.3)]' : ''}
+                  ${label === 'TikTok' ? 'max-md:text-cream max-md:border-transparent max-md:shadow-[0_10px_25px_rgba(225,48,108,0.3)]' : ''}
                   ${label === 'Facebook' ? 'max-md:text-cream max-md:border-transparent max-md:shadow-[0_10px_25px_rgba(24,119,242,0.3)]' : ''}
                   md:border-[rgba(90,82,72,0.25)] md:bg-white/60 md:text-mid md:hover:text-cream md:hover:border-transparent`}
               >
@@ -102,64 +96,13 @@ const Contact = () => {
           </div>
         </div>
 
-        <form className="flex flex-col gap-8 bg-cream p-8 md:p-12 border border-[rgba(160,140,120,0.15)] shadow-[0_20px_40px_rgba(0,0,0,0.03)]" onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="flex flex-col gap-2 group">
-              <label className="text-[0.62rem] font-medium tracking-[0.2em] uppercase text-accent/80 transition-colors group-focus-within:text-accent">Nombre</label>
-              <input 
-                type="text" 
-                placeholder="Tu nombre completo"
-                className="bg-transparent border-b border-[rgba(90,82,72,0.2)] py-2.5 font-sans text-[0.9rem] font-light text-dark outline-none transition-all focus:border-accent placeholder:text-mid/30" 
-              />
-            </div>
-            <div className="flex flex-col gap-2 group">
-              <label className="text-[0.62rem] font-medium tracking-[0.2em] uppercase text-accent/80 transition-colors group-focus-within:text-accent">Email</label>
-              <input 
-                type="email" 
-                placeholder="tu@email.com"
-                className="bg-transparent border-b border-[rgba(90,82,72,0.2)] py-2.5 font-sans text-[0.9rem] font-light text-dark outline-none transition-all focus:border-accent placeholder:text-mid/30" 
-              />
-            </div>
-          </div>
-          
-          <div className="flex flex-col gap-2 group relative">
-            <label className="text-[0.62rem] font-medium tracking-[0.2em] uppercase text-accent/80 transition-colors group-focus-within:text-accent">Tipo de Proyecto</label>
-            <div className="relative">
-              <select className="w-full bg-transparent border-b border-[rgba(90,82,72,0.2)] py-2.5 font-sans text-[0.9rem] font-light text-dark outline-none focus:border-accent appearance-none rounded-none cursor-pointer">
-                <option value="" className="bg-cream">Selecciona una opción...</option>
-                <option className="bg-cream">Edición de Reels</option>
-                <option className="bg-cream">Video Institucional / Storytelling</option>
-                <option className="bg-cream">Drone Work</option>
-                <option className="bg-cream">Fotografía</option>
-                <option className="bg-cream">Otro</option>
-              </select>
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-accent/50">
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-2 group">
-            <label className="text-[0.62rem] font-medium tracking-[0.2em] uppercase text-accent/80 transition-colors group-focus-within:text-accent">Mensaje</label>
-            <textarea 
-              placeholder="¿En qué puedo ayudarte?"
-              className="bg-transparent border-b border-[rgba(90,82,72,0.2)] py-2.5 font-sans text-[0.9rem] font-light text-dark outline-none transition-all focus:border-accent resize-none min-h-[100px] placeholder:text-mid/30" 
-            />
-          </div>
-
-          <button 
-            type="submit" 
-            className={`group relative overflow-hidden font-sans text-[0.7rem] font-medium tracking-[0.25em] uppercase px-12 py-4 transition-all duration-500 self-start mt-4 ${
-              isSent ? 'bg-accent text-cream' : 'bg-dark text-cream hover:bg-accent'
-            }`}
-            disabled={isSent}
-          >
-            <span className="relative z-10">{isSent ? 'Mensaje Enviado ✓' : 'Enviar Mensaje'}</span>
-            {!isSent && (
-              <div className="absolute inset-0 bg-accent translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)]" />
-            )}
-          </button>
-        </form>
+        <div className="w-full overflow-hidden border border-[rgba(160,140,120,0.15)] shadow-[0_20px_40px_rgba(0,0,0,0.05)]">
+          <img 
+            src={horizontalImg} 
+            alt="Work Environment" 
+            className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+          />
+        </div>
       </div>
     </section>
   );
