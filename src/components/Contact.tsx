@@ -71,7 +71,7 @@ const Contact = () => {
               },
             ].map(({ href, label, icon }) => (
               <a key={label} href={href} target="_blank" rel="noopener noreferrer"
-                className={`group relative flex items-center gap-2.5 px-5 py-3 border overflow-hidden
+                className={`group relative flex items-center gap-2.5 px-6 py-3 border overflow-hidden rounded-full
                   text-[0.65rem] font-light tracking-[0.22em] uppercase transition-colors duration-300
                   ${label === 'Instagram' ? 'max-md:text-cream max-md:border-transparent' : ''}
                   ${label === 'TikTok' ? 'max-md:text-cream max-md:border-transparent' : ''}
@@ -79,7 +79,7 @@ const Contact = () => {
                   md:border-[rgba(90,82,72,0.25)] md:bg-white/60 md:text-mid md:hover:text-cream md:hover:border-transparent`}
               >
                 {/* wipe fill */}
-                <span className={`absolute inset-0 transition-transform duration-[380ms] ease-[cubic-bezier(0.76,0,0.24,1)]
+                <span className={`absolute inset-0 transition-transform duration-[380ms] ease-[cubic-bezier(0.76,0,0.24,1)] rounded-full
                   max-md:translate-y-0 md:translate-y-full md:group-hover:translate-y-0
                   ${label === 'Instagram' ? 'bg-gradient-to-br from-[#f09433] via-[#dc2743] to-[#bc1888]' : ''}
                   ${label === 'TikTok' ? 'bg-[#010101]' : ''}
