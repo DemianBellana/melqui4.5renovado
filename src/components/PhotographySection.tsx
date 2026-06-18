@@ -7,6 +7,38 @@ import { useGSAP } from '@gsap/react';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const SOCIAL_LINKS = {
+  instagram: 'https://instagram.com/TU_USUARIO',
+  tiktok:    'https://tiktok.com/@TU_USUARIO',
+  facebook:  'https://facebook.com/TU_USUARIO',
+};
+
+const IconInstagram = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+    <circle cx="12" cy="12" r="4"/>
+    <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none"/>
+  </svg>
+);
+
+const IconTikTok = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"/>
+  </svg>
+);
+
+const IconFacebook = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+  </svg>
+);
+
+const socialButtons = [
+  { key: 'instagram', Icon: IconInstagram, label: 'Instagram', color: '#E1306C' },
+  { key: 'tiktok',    Icon: IconTikTok,    label: 'TikTok',    color: '#010101' },
+  { key: 'facebook',  Icon: IconFacebook,  label: 'Facebook',  color: '#1877F2' },
+];
+
 const CategoryCarousel = ({ photos, title, onImageClick, globalOffset }: { 
   photos: string[], 
   title: string, 
@@ -54,11 +86,8 @@ const CategoryCarousel = ({ photos, title, onImageClick, globalOffset }: {
     return (
       <div className="photo-grid columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
         {photos.map((photo, idx) => {
-          // Diferentes ratios para crear el efecto "desordenado"
           const ratios = ['aspect-[3/4]', 'aspect-square', 'aspect-[4/5]', 'aspect-[2/3]'];
           const ratio = ratios[idx % ratios.length];
-          
-          // Desplazamientos verticales para romper la línea horizontal
           const offsets = ['', 'md:mt-12', 'md:-mt-8', 'md:mt-6'];
           const offset = offsets[idx % offsets.length];
 
@@ -89,9 +118,7 @@ const CategoryCarousel = ({ photos, title, onImageClick, globalOffset }: {
   return (
     <div 
       className="relative overflow-hidden touch-pan-y"
-      onPointerDown={() => {
-        if (timerRef.current) clearInterval(timerRef.current);
-      }}
+      onPointerDown={() => { if (timerRef.current) clearInterval(timerRef.current); }}
       onPointerUp={resetTimer}
       onPointerLeave={resetTimer}
     >
@@ -104,20 +131,13 @@ const CategoryCarousel = ({ photos, title, onImageClick, globalOffset }: {
         dragElastic={0.7}
         onDragEnd={(_, info) => {
           const swipeThreshold = 50;
-          if (info.offset.x < -swipeThreshold) {
-            handleNext();
-          } else if (info.offset.x > swipeThreshold) {
-            handlePrev();
-          } else {
-            resetTimer();
-          }
+          if (info.offset.x < -swipeThreshold) handleNext();
+          else if (info.offset.x > swipeThreshold) handlePrev();
+          else resetTimer();
         }}
       >
         {photos.map((photo, idx) => (
-          <div 
-            key={idx} 
-            className="min-w-full aspect-[3/4] px-1"
-          >
+          <div key={idx} className="min-w-full aspect-[3/4] px-1">
             <div className="w-full h-full overflow-hidden rounded-sm">
               <img 
                 src={photo} 
@@ -129,7 +149,6 @@ const CategoryCarousel = ({ photos, title, onImageClick, globalOffset }: {
         ))}
       </motion.div>
       
-      {/* Pagination Dots */}
       <div className="flex justify-center gap-1.5 mt-4">
         {photos.map((_, idx) => (
           <div 
@@ -153,10 +172,8 @@ const PhotographySection = () => {
     
     categoryBlocks.forEach((block: any) => {
       const title = block.querySelector('.category-title');
-      // En desktop son .photo-card, en mobile es el contenedor del carrusel
       const content = block.querySelector('.photo-grid') || block.querySelector('.relative.overflow-hidden');
 
-      // Animación del título de categoría
       gsap.from(title, {
         scrollTrigger: {
           trigger: title,
@@ -169,7 +186,6 @@ const PhotographySection = () => {
         ease: 'power3.out'
       });
 
-      // Animación del contenido (fotos o carrusel)
       if (content) {
         gsap.from(content, {
           scrollTrigger: {
@@ -185,7 +201,6 @@ const PhotographySection = () => {
       }
     });
 
-    // Animación del encabezado de sección
     gsap.from('.section-header', {
       scrollTrigger: {
         trigger: '.section-header',
@@ -261,16 +276,12 @@ const PhotographySection = () => {
 
   const handleNext = (e?: React.MouseEvent) => {
     e?.stopPropagation();
-    if (selectedImage !== null) {
-      setSelectedImage((selectedImage + 1) % allPhotos.length);
-    }
+    if (selectedImage !== null) setSelectedImage((selectedImage + 1) % allPhotos.length);
   };
 
   const handlePrev = (e?: React.MouseEvent) => {
     e?.stopPropagation();
-    if (selectedImage !== null) {
-      setSelectedImage((selectedImage - 1 + allPhotos.length) % allPhotos.length);
-    }
+    if (selectedImage !== null) setSelectedImage((selectedImage - 1 + allPhotos.length) % allPhotos.length);
   };
 
   useEffect(() => {
@@ -280,7 +291,6 @@ const PhotographySection = () => {
       if (e.key === 'ArrowRight') handleNext();
       if (e.key === 'ArrowLeft') handlePrev();
     };
-
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedImage]);
@@ -316,6 +326,32 @@ const PhotographySection = () => {
             </div>
           );
         })}
+      </div>
+
+      {/* Redes sociales — al pie de la sección */}
+      <div className="flex items-center justify-center gap-5 mt-20 pt-10 border-t border-accent/20 max-w-[1400px] mx-auto">
+        <span className="font-serif italic text-sm text-accent">Seguime</span>
+        {socialButtons.map(({ key, Icon, label, color }) => (
+          <a
+            key={key}
+            href={SOCIAL_LINKS[key as keyof typeof SOCIAL_LINKS]}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={label}
+            className="w-10 h-10 rounded-full flex items-center justify-center transition-transform duration-200"
+            style={{ color, border: `1px solid ${color}33` }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLElement).style.borderColor = color + '88';
+              (e.currentTarget as HTMLElement).style.transform = 'scale(1.15) translateY(-2px)';
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLElement).style.borderColor = color + '33';
+              (e.currentTarget as HTMLElement).style.transform = 'scale(1) translateY(0)';
+            }}
+          >
+            <Icon />
+          </a>
+        ))}
       </div>
 
       {/* Lightbox */}
@@ -364,7 +400,6 @@ const PhotographySection = () => {
                 className="max-w-full max-h-[75vh] md:max-h-[80vh] object-contain shadow-2xl"
               />
               
-              {/* Image Metadata */}
               <motion.div 
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -377,9 +412,7 @@ const PhotographySection = () => {
                     if (selectedImage < currentCount + cat.photos.length) {
                       return (
                         <>
-                          <span className="font-serif italic text-xl block mb-1">
-                            {cat.title}
-                          </span>
+                          <span className="font-serif italic text-xl block mb-1">{cat.title}</span>
                           <span className="text-[0.7rem] uppercase tracking-widest text-white/50">
                             {selectedImage - currentCount + 1} / {cat.photos.length}
                           </span>
