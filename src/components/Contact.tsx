@@ -35,12 +35,57 @@ const Contact = () => {
               </strong>
               <a href="https://wa.me/yournumber" target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors">+54 9 11 XXXX-XXXX</a>
             </div>
-            <div className="text-[0.82rem] font-light text-mid tracking-[0.05em]">
-              <strong className="text-dark font-normal block mb-1 text-[0.68rem] tracking-[0.18em] uppercase">
-                Instagram
-              </strong>
-              <a href="https://instagram.com/melisaquiroga" target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors">@melisaquiroga</a>
-            </div>
+          </div>
+
+          {/* Botones redes sociales */}
+          <div className="flex flex-wrap gap-3 mt-10">
+            {[
+              {
+                href: 'https://instagram.com/melisaquiroga',
+                label: 'Instagram',
+                icon: (
+                  <svg className="w-3.5 h-3.5 flex-shrink-0 relative z-10 transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:-rotate-[8deg] group-hover:scale-125" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                    <rect x="2" y="2" width="20" height="20" rx="5.5"/>
+                    <circle cx="12" cy="12" r="4.5"/>
+                    <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+                  </svg>
+                ),
+              },
+              {
+                href: 'https://tiktok.com/@melisaquiroga',
+                label: 'TikTok',
+                icon: (
+                  <svg className="w-3.5 h-3.5 flex-shrink-0 relative z-10 transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:-rotate-[8deg] group-hover:scale-125" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.93a8.2 8.2 0 0 0 4.78 1.52V7a4.85 4.85 0 0 1-1.01-.31z"/>
+                  </svg>
+                ),
+              },
+              {
+                href: 'https://facebook.com/melisaquiroga',
+                label: 'Facebook',
+                icon: (
+                  <svg className="w-3.5 h-3.5 flex-shrink-0 relative z-10 transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:-rotate-[8deg] group-hover:scale-125" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M24 12.07C24 5.41 18.63 0 12 0S0 5.41 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.04V9.41c0-3.02 1.8-4.7 4.54-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.5c-1.5 0-1.96.93-1.96 1.89v2.26h3.32l-.53 3.49h-2.79V24C19.61 23.1 24 18.1 24 12.07z"/>
+                  </svg>
+                ),
+              },
+            ].map(({ href, label, icon }) => (
+              <a key={label} href={href} target="_blank" rel="noopener noreferrer"
+                className="group relative flex items-center gap-2.5 px-5 py-3 border border-[rgba(90,82,72,0.25)] bg-white/60 overflow-hidden
+                  text-[0.65rem] font-light tracking-[0.22em] uppercase text-mid
+                  transition-colors duration-300 hover:text-cream hover:border-transparent"
+              >
+                {/* wipe fill */}
+                <span className={`absolute inset-0 translate-y-full group-hover:translate-y-0 transition-transform duration-[380ms] ease-[cubic-bezier(0.76,0,0.24,1)]
+                  ${label === 'Instagram' ? 'bg-gradient-to-br from-[#f09433] via-[#dc2743] to-[#bc1888]' : ''}
+                  ${label === 'TikTok' ? 'bg-[#010101]' : ''}
+                  ${label === 'Facebook' ? 'bg-[#1877f2]' : ''}
+                `} />
+                {icon}
+                <span className="relative z-10">{label}</span>
+                <span className="relative z-10 text-[0.7rem] opacity-0 -translate-x-1 translate-y-1 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-300 delay-75">↗</span>
+              </a>
+            ))}
           </div>
         </div>
 
