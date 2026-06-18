@@ -71,19 +71,31 @@ const Contact = () => {
               },
             ].map(({ href, label, icon }) => (
               <a key={label} href={href} target="_blank" rel="noopener noreferrer"
-                className="group relative flex items-center gap-2.5 px-5 py-3 border border-[rgba(90,82,72,0.25)] bg-white/60 overflow-hidden
-                  text-[0.65rem] font-light tracking-[0.22em] uppercase text-mid
-                  transition-colors duration-300 hover:text-cream hover:border-transparent"
+                className={`group relative flex items-center gap-2.5 px-5 py-3 border overflow-hidden
+                  text-[0.65rem] font-light tracking-[0.22em] uppercase transition-colors duration-300
+                  ${label === 'Instagram' ? 'max-md:text-cream max-md:border-transparent' : ''}
+                  ${label === 'TikTok' ? 'max-md:text-cream max-md:border-transparent' : ''}
+                  ${label === 'Facebook' ? 'max-md:text-cream max-md:border-transparent' : ''}
+                  md:border-[rgba(90,82,72,0.25)] md:bg-white/60 md:text-mid md:hover:text-cream md:hover:border-transparent`}
               >
                 {/* wipe fill */}
-                <span className={`absolute inset-0 translate-y-full group-hover:translate-y-0 transition-transform duration-[380ms] ease-[cubic-bezier(0.76,0,0.24,1)]
+                <span className={`absolute inset-0 transition-transform duration-[380ms] ease-[cubic-bezier(0.76,0,0.24,1)]
+                  max-md:translate-y-0 md:translate-y-full md:group-hover:translate-y-0
                   ${label === 'Instagram' ? 'bg-gradient-to-br from-[#f09433] via-[#dc2743] to-[#bc1888]' : ''}
                   ${label === 'TikTok' ? 'bg-[#010101]' : ''}
                   ${label === 'Facebook' ? 'bg-[#1877f2]' : ''}
                 `} />
-                {icon}
+                
+                {/* Icon wrapper to handle mobile active state */}
+                <div className="relative z-10 transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] 
+                  max-md:-rotate-[8deg] max-md:scale-125 md:group-hover:-rotate-[8deg] md:group-hover:scale-125">
+                  {icon}
+                </div>
+
                 <span className="relative z-10">{label}</span>
-                <span className="relative z-10 text-[0.7rem] opacity-0 -translate-x-1 translate-y-1 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-300 delay-75">↗</span>
+                <span className="relative z-10 text-[0.7rem] opacity-0 -translate-x-1 translate-y-1 
+                  max-md:opacity-100 max-md:translate-x-0 max-md:translate-y-0
+                  md:group-hover:opacity-100 md:group-hover:translate-x-0 md:group-hover:translate-y-0 transition-all duration-300 delay-75">↗</span>
               </a>
             ))}
           </div>
