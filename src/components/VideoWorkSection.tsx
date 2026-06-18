@@ -1,5 +1,4 @@
-import { useRef } from 'react';
-import { Play } from 'lucide-react';
+import { useRef, useState } from 'react';
 import { motion, useSpring, useMotionValue, useTransform } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -14,7 +13,7 @@ const SOCIAL_LINKS = {
 };
 
 const IconInstagram = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
     <circle cx="12" cy="12" r="4"/>
     <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none"/>
@@ -22,13 +21,13 @@ const IconInstagram = () => (
 );
 
 const IconTikTok = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
     <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"/>
   </svg>
 );
 
 const IconFacebook = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
     <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
   </svg>
 );
@@ -39,48 +38,36 @@ const socialButtons = [
   { key: 'facebook',  Icon: IconFacebook,  label: 'Facebook',  color: '#1877F2' },
 ];
 
-const SocialButtons = () => (
-  <div className="flex gap-3 mt-6 justify-center">
-    {socialButtons.map(({ key, Icon, label, color }) => (
-      <a
-        key={key}
-        href={SOCIAL_LINKS[key as keyof typeof SOCIAL_LINKS]}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={label}
-        className="w-9 h-9 rounded-full flex items-center justify-center bg-cream/80 transition-all duration-200 hover:scale-110"
-        style={{
-          color: color,
-          border: `1px solid ${color}33`,
-        }}
-        onMouseEnter={e => {
-          (e.currentTarget as HTMLElement).style.borderColor = color + '88';
-          (e.currentTarget as HTMLElement).style.transform = 'scale(1.15)';
-        }}
-        onMouseLeave={e => {
-          (e.currentTarget as HTMLElement).style.borderColor = color + '33';
-          (e.currentTarget as HTMLElement).style.transform = 'scale(1)';
-        }}
-      >
-        <Icon />
-      </a>
-    ))}
-  </div>
-);
-
-const VideoCard = ({ cat, index }: { cat: any; index: number }) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-
+// ─── iPhone Frame ────────────────────────────────────────────────────────────
+const IPhoneFrame = ({ video, isActive, onClick }) => {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const mouseXSpring = useSpring(x, { stiffness: 120, damping: 18 });
-  const mouseYSpring = useSpring(y, { stiffness: 120, damping: 18 });
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["8deg", "-8deg"]);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
+  const mouseXSpring = useSpring(x, { stiffness: 100, damping: 20 });
+  const mouseYSpring = useSpring(y, { stiffness: 100, damping: 20 });
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ['6deg', '-6deg']);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ['-8deg', '8deg']);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
+  const frameRef = useRef(null);
+  const videoRef = useRef(null);
+  const [playing, setPlaying] = useState(false);
+
+  const handleVideoClick = (e) => {
+    e.stopPropagation();
+    const vid = videoRef.current;
+    if (!vid) return;
+    if (vid.paused) {
+      vid.play();
+      setPlaying(true);
+    } else {
+      vid.pause();
+      setPlaying(false);
+    }
+    onClick();
+  };
+
+  const handleMouseMove = (e) => {
+    if (!frameRef.current) return;
+    const rect = frameRef.current.getBoundingClientRect();
     x.set((e.clientX - rect.left) / rect.width - 0.5);
     y.set((e.clientY - rect.top) / rect.height - 0.5);
   };
@@ -92,67 +79,212 @@ const VideoCard = ({ cat, index }: { cat: any; index: number }) => {
 
   return (
     <motion.div
-      ref={cardRef}
+      ref={frameRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      style={{ rotateY, rotateX, perspective: 900, transformStyle: "preserve-3d" }}
-      initial={{ borderRadius: "20px" }}
-      whileHover={{
-        scale: 1.03,
-        borderRadius: "32px 14px 32px 14px",
-        y: -6,
-        transition: {
-          scale:        { type: "spring", stiffness: 260, damping: 18 },
-          borderRadius: { duration: 0.4, ease: "easeInOut" },
-          y:            { type: "spring", stiffness: 220, damping: 16 },
-        },
-      }}
-      className="video-card group relative overflow-hidden bg-cream p-6 md:p-10 border border-[rgba(160,140,120,0.15)] shadow-sm transition-shadow duration-300 hover:shadow-[0_30px_60px_rgba(20,17,14,0.15)]"
+      style={{ rotateX, rotateY, perspective: 1000 }}
+      whileHover={{ scale: 1.04, y: -8 }}
+      transition={{ type: 'spring', stiffness: 220, damping: 18 }}
+      className="iphone-frame cursor-pointer"
     >
-      <span className="font-serif text-[2rem] italic font-light text-accent block mb-4" style={{ transform: "translateZ(20px)" }}>
-        {String(index + 1).padStart(2, '0')}
-      </span>
-      <h3 className="font-serif text-[1.8rem] font-normal text-dark mb-4" style={{ transform: "translateZ(40px)" }}>
-        {cat.name}
-      </h3>
-      <p className="text-[0.88rem] font-light leading-[1.8] text-mid mb-8" style={{ transform: "translateZ(30px)" }}>
-        {cat.desc}
-      </p>
-
-      <motion.div
-        className="relative aspect-[9/16] bg-dark overflow-hidden shadow-inner"
-        style={{ transform: "translateZ(60px)", transformStyle: "preserve-3d" }}
-        initial={{ borderRadius: "14px" }}
-        whileHover={{ borderRadius: "22px 8px 22px 8px", transition: { duration: 0.4, ease: "easeInOut" } }}
-      >
-        <video controls className="w-full h-full object-cover">
-          <source src={cat.video} type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 pointer-events-none flex items-center justify-center bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ transform: "translateZ(40px)" }}>
-          <motion.div
-            className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-md border border-white/40 flex items-center justify-center"
-            initial={{ scale: 1 }}
-            whileHover={{ scale: 1.28 }}
-            transition={{ type: "spring", stiffness: 320, damping: 14 }}
-          >
-            <Play size={30} className="text-white fill-white ml-1" />
-          </motion.div>
-        </div>
-      </motion.div>
-
-      {/* Mobile: siempre visibles con color. Desktop: aparecen al hover */}
+      {/* Outer shell */}
       <div
-        className="md:opacity-0 md:translate-y-2 md:group-hover:opacity-100 md:group-hover:translate-y-0 transition-all duration-300"
-        style={{ transform: "translateZ(30px)" }}
+        style={{
+          width: '220px',
+          height: '460px',
+          borderRadius: '42px',
+          background: 'linear-gradient(145deg, #2a2a2a 0%, #111 40%, #1a1a1a 100%)',
+          padding: '3px',
+          boxShadow: isActive
+            ? '0 0 0 2px #e02020, 0 40px 80px rgba(0,0,0,0.25), 0 0 40px rgba(220,30,30,0.1)'
+            : '0 20px 60px rgba(0,0,0,0.18), 0 4px 16px rgba(0,0,0,0.12)',
+          position: 'relative',
+        }}
       >
-        <SocialButtons />
+        {/* Inner bezel */}
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            borderRadius: '40px',
+            background: '#0a0a0a',
+            overflow: 'hidden',
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          {/* Status bar + notch */}
+          <div
+            style={{
+              height: '32px',
+              background: '#000',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+              position: 'relative',
+            }}
+          >
+            {/* Notch */}
+            <div
+              style={{
+                width: '80px',
+                height: '20px',
+                background: '#000',
+                borderRadius: '0 0 14px 14px',
+                position: 'absolute',
+                top: 0,
+                left: '50%',
+                transform: 'translateX(-50%)',
+                zIndex: 10,
+              }}
+            />
+          </div>
+
+          {/* Video content */}
+          <div
+            onClick={handleVideoClick}
+            style={{ flex: 1, overflow: 'hidden', position: 'relative', cursor: 'pointer' }}
+          >
+            <video
+              ref={videoRef}
+              loop
+              muted={false}
+              playsInline
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'contain',
+                display: 'block',
+                backgroundColor: '#000'
+              }}
+            >
+              <source src={video} type="video/mp4" />
+              <source src={video} type="video/quicktime" />
+            </video>
+
+            {/* Play/Pause overlay */}
+            <motion.div
+              initial={{ opacity: 1 }}
+              animate={{ opacity: playing ? 0 : 1 }}
+              transition={{ duration: 0.2 }}
+              style={{
+                position: 'absolute',
+                inset: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: playing ? 'transparent' : 'rgba(0,0,0,0.25)',
+                pointerEvents: 'none',
+              }}
+            >
+              <div
+                style={{
+                  width: '52px',
+                  height: '52px',
+                  borderRadius: '50%',
+                  background: 'rgba(255,255,255,0.85)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+                }}
+              >
+                {/* Play triangle */}
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#111">
+                  <polygon points="5,3 19,12 5,21" />
+                </svg>
+              </div>
+            </motion.div>
+
+            {/* Subtle screen glare */}
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 50%)',
+                pointerEvents: 'none',
+              }}
+            />
+          </div>
+
+          {/* Home indicator bar */}
+          <div
+            style={{
+              height: '24px',
+              background: '#000',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+            }}
+          >
+            <div
+              style={{
+                width: '60px',
+                height: '4px',
+                background: '#333',
+                borderRadius: '2px',
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Side buttons (decorative) */}
+        <div
+          style={{
+            position: 'absolute',
+            left: '-4px',
+            top: '80px',
+            width: '4px',
+            height: '28px',
+            background: '#2a2a2a',
+            borderRadius: '2px 0 0 2px',
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            left: '-4px',
+            top: '118px',
+            width: '4px',
+            height: '44px',
+            background: '#2a2a2a',
+            borderRadius: '2px 0 0 2px',
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            left: '-4px',
+            top: '172px',
+            width: '4px',
+            height: '44px',
+            background: '#2a2a2a',
+            borderRadius: '2px 0 0 2px',
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            right: '-4px',
+            top: '110px',
+            width: '4px',
+            height: '64px',
+            background: '#2a2a2a',
+            borderRadius: '0 2px 2px 0',
+          }}
+        />
       </div>
     </motion.div>
   );
 };
 
+// ─── Main Section ─────────────────────────────────────────────────────────────
 const VideoWorkSection = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef(null);
+  const [activeIndex, setActiveIndex] = useState(null);
 
   const categories = [
     { name: 'Social Media', desc: 'Contenido optimizado para redes sociales.',  video: '/assets/video/work/social_media_1.mp4' },
@@ -162,36 +294,174 @@ const VideoWorkSection = () => {
   ];
 
   useGSAP(() => {
-    const cards = gsap.utils.toArray('.video-card');
-    
-    cards.forEach((card: any, i: number) => {
-      gsap.from(card, {
+    const frames = gsap.utils.toArray('.iphone-frame');
+    frames.forEach((frame, i) => {
+      gsap.from(frame, {
         scrollTrigger: {
-          trigger: card,
-          start: 'top 85%',
+          trigger: frame,
+          start: 'top 88%',
           toggleActions: 'play none none reverse',
         },
-        x: i % 2 === 0 ? -100 : 100, // Izquierda si es par, derecha si es impar
+        y: 80,
         opacity: 0,
-        duration: 1.2,
+        duration: 1.0,
+        delay: i * 0.12,
         ease: 'power3.out',
       });
     });
   }, { scope: sectionRef });
 
   return (
-    <section id="video-work" ref={sectionRef} className="px-6 py-16 md:px-16 md:py-28 bg-warm-white overflow-hidden">
-      <div className="text-center mb-16">
-        <span className="text-[0.62rem] font-light tracking-[0.28em] uppercase text-accent mb-6">
+    <section
+      id="video-work"
+      ref={sectionRef}
+      style={{
+        background: '#f7f4ef',
+        padding: '80px 24px 100px',
+        overflow: 'hidden',
+        position: 'relative',
+      }}
+    >
+      {/* Subtle accent glow top */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '600px',
+          height: '300px',
+          background: 'radial-gradient(ellipse, rgba(220,30,30,0.05) 0%, transparent 70%)',
+          pointerEvents: 'none',
+        }}
+      />
+
+      {/* Header */}
+      <div style={{ textAlign: 'center', marginBottom: '64px' }}>
+        <span
+          style={{
+            fontSize: '0.62rem',
+            letterSpacing: '0.28em',
+            textTransform: 'uppercase',
+            color: '#e02020',
+            display: 'block',
+            marginBottom: '16px',
+          }}
+        >
           02. Video Work
         </span>
-        <h2 className="font-serif text-[clamp(2rem,3.5vw,3.2rem)] font-light leading-[1.18] text-dark mt-4">
-          Categorías y<br /><em className="italic">especialidades</em>
+        <h2
+          style={{
+            fontFamily: 'Georgia, serif',
+            fontSize: 'clamp(2rem, 3.5vw, 3rem)',
+            fontWeight: 300,
+            color: '#1a1714',
+            lineHeight: 1.18,
+            margin: 0,
+          }}
+        >
+          Categorías y<br />
+          <em style={{ fontStyle: 'italic', color: '#555' }}>especialidades</em>
         </h2>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-[1100px] mx-auto">
-        {categories.map((cat, index) => (
-          <VideoCard key={index} cat={cat} index={index} />
+
+      {/* iPhone grid */}
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+          gap: '32px',
+          maxWidth: '1100px',
+          margin: '0 auto',
+          alignItems: 'flex-end',
+        }}
+      >
+        {categories.map((cat, i) => (
+          <div
+            key={i}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '20px',
+              /* Stagger vertical offset for visual rhythm */
+              marginTop: i % 2 === 1 ? '40px' : '0',
+            }}
+          >
+            <IPhoneFrame
+              video={cat.video}
+              isActive={activeIndex === i}
+              onClick={() => setActiveIndex(activeIndex === i ? null : i)}
+            />
+
+            {/* Label below phone */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 + 0.3 }}
+              style={{ textAlign: 'center' }}
+            >
+              <p
+                style={{
+                  fontFamily: 'Georgia, serif',
+                  fontSize: '1rem',
+                  fontWeight: 400,
+                  color: '#1a1714',
+                  margin: '0 0 4px',
+                }}
+              >
+                {cat.name}
+              </p>
+              <p
+                style={{
+                  fontSize: '0.75rem',
+                  color: '#888',
+                  margin: '0 0 12px',
+                  maxWidth: '180px',
+                  lineHeight: 1.5,
+                }}
+              >
+                {cat.desc}
+              </p>
+
+              {/* Social icons */}
+              <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                {socialButtons.map(({ key, Icon, label, color }) => (
+                  <a
+                    key={key}
+                    href={SOCIAL_LINKS[key]}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    style={{
+                      width: '32px',
+                      height: '32px',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      background: 'rgba(0,0,0,0.05)',
+                      border: `1px solid ${color}33`,
+                      color: color,
+                      transition: 'transform 0.2s, border-color 0.2s',
+                      textDecoration: 'none',
+                    }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.transform = 'scale(1.15)';
+                      e.currentTarget.style.borderColor = color + '88';
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.transform = 'scale(1)';
+                      e.currentTarget.style.borderColor = color + '33';
+                    }}
+                  >
+                    <Icon />
+                  </a>
+                ))}
+              </div>
+            </motion.div>
+          </div>
         ))}
       </div>
     </section>
