@@ -11,11 +11,11 @@ const Footer = () => {
             Historias que impactan.<br /> Argentinas & Worldwide.
           </p>
           <div className="flex gap-5 mt-6">
-            <a href="#" className="text-[0.8rem] font-light tracking-[0.15em] uppercase text-[rgba(255,255,255,0.4)] no-underline transition-colors duration-200 hover:text-accent">
+            <a href="https://instagram.com/melisaquiroga" target="_blank" rel="noopener noreferrer" className="text-[0.8rem] font-light tracking-[0.15em] uppercase text-[rgba(255,255,255,0.4)] no-underline transition-colors duration-200 hover:text-accent">
               Instagram
             </a>
-            <a href="#" className="text-[0.8rem] font-light tracking-[0.15em] uppercase text-[rgba(255,255,255,0.4)] no-underline transition-colors duration-200 hover:text-accent">
-              Facebook
+            <a href="https://tiktok.com/@melisaquiroga" target="_blank" rel="noopener noreferrer" className="text-[0.8rem] font-light tracking-[0.15em] uppercase text-[rgba(255,255,255,0.4)] no-underline transition-colors duration-200 hover:text-accent">
+              TikTok
             </a>
           </div>
         </div>

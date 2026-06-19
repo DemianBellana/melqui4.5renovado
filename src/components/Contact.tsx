@@ -15,22 +15,9 @@ const TikTokIcon = ({ size = 28 }: { size?: number }) => (
   </svg>
 );
 
-const FacebookIcon = ({ size = 28 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" stroke="none">
-    <path d="M24 12.07C24 5.41 18.63 0 12 0S0 5.41 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.04V9.41c0-3.02 1.8-4.7 4.54-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.5c-1.5 0-1.96.93-1.96 1.89v2.26h3.32l-.53 3.49h-2.79V24C19.61 23.1 24 18.1 24 12.07z"/>
-  </svg>
-);
-
 const Contact = () => {
-  const [isSent, setIsSent] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSent(true);
-  };
-
   return (
-    <section id="contact" className="relative px-6 py-20 md:px-16 md:py-32 overflow-hidden min-h-screen flex items-center">
+    <section id="contact" className="relative px-6 py-20 md:px-16 md:py-32 overflow-hidden min-h-screen flex items-center justify-center">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <img 
@@ -41,26 +28,26 @@ const Contact = () => {
         <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
       </div>
 
-      <div className="relative z-10 max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center w-full">
-        <div className="text-white">
+      <div className="relative z-10 max-w-[800px] mx-auto text-center w-full flex flex-col items-center justify-center">
+        <div className="text-white flex flex-col items-center">
           <span className="text-[0.62rem] font-light tracking-[0.28em] uppercase text-white/70 mb-6 block">
             Contacto
           </span>
-          <h2 className="font-serif text-[clamp(2.5rem,4vw,3.8rem)] font-light leading-[1.12] text-white mt-4 mb-6">
+          <h2 className="font-serif text-[clamp(2.5rem,4vw,3.8rem)] font-light leading-[1.12] text-white mt-4 mb-6 text-center">
             ¿Hablamos sobre<br /><em className="italic text-[#D8B7B0]">tu próximo proyecto?</em>
           </h2>
-          <p className="text-[1rem] font-light leading-[1.8] text-white/80 max-w-[42ch] mb-10">
+          <p className="text-[1rem] font-light leading-[1.8] text-white/80 max-w-[42ch] mb-10 text-center">
             Cuéntame tu idea y buscaremos la mejor forma de llevarla a cabo. Respondo en menos de 24 horas.
           </p>
 
-          <div className="flex flex-col gap-8 mt-12">
-            <div className="text-[0.9rem] font-light text-white/70 tracking-[0.05em]">
+          <div className="flex flex-col gap-8 justify-center items-center mt-6 mb-12">
+            <div className="text-[0.9rem] font-light text-white/70 tracking-[0.05em] text-center">
               <strong className="text-white font-normal block mb-1 text-[0.68rem] tracking-[0.18em] uppercase opacity-50">
                 Email
               </strong>
               <a href="mailto:melisaquiroga@gmail.com" className="hover:text-[#D8B7B0] transition-colors text-lg">melisaquiroga@gmail.com</a>
             </div>
-            <div className="text-[0.9rem] font-light text-white/70 tracking-[0.05em]">
+            <div className="text-[0.9rem] font-light text-white/70 tracking-[0.05em] text-center">
               <strong className="text-white font-normal block mb-1 text-[0.68rem] tracking-[0.18em] uppercase opacity-50">
                 WhatsApp
               </strong>
@@ -69,13 +56,13 @@ const Contact = () => {
           </div>
 
           {/* Redes sociales - Desktop Version */}
-          <ul className="social-list-desktop hidden lg:flex">
+          <ul className="social-list-desktop hidden lg:flex justify-center gap-6">
             {[
               {
                 href: 'https://instagram.com/melisaquiroga',
                 label: 'Instagram',
                 icon: <InstagramIcon size={28} />,
-                i: '#E1306C', // More accurate brand pink/red
+                i: '#E1306C',
                 j: '#bc1888'
               },
               {
@@ -84,13 +71,6 @@ const Contact = () => {
                 icon: <TikTokIcon size={28} />,
                 i: '#000000',
                 j: '#444444'
-              },
-              {
-                href: 'https://facebook.com/melisaquiroga',
-                label: 'Facebook',
-                icon: <FacebookIcon size={28} />,
-                i: '#1877f2',
-                j: '#2F80ED'
               },
             ].map(({ href, label, icon, i, j }) => (
               <li 
@@ -105,7 +85,7 @@ const Contact = () => {
           </ul>
 
           {/* Redes sociales - Mobile Version (Circular & Filled) */}
-          <ul className="social-list-mobile flex lg:hidden">
+          <ul className="social-list-mobile flex lg:hidden justify-center gap-4">
             {[
               {
                 href: 'https://instagram.com/melisaquiroga',
@@ -118,12 +98,6 @@ const Contact = () => {
                 label: 'TikTok',
                 icon: <TikTokIcon size={28} />,
                 color: '#000000'
-              },
-              {
-                href: 'https://facebook.com/melisaquiroga',
-                label: 'Facebook',
-                icon: <FacebookIcon size={28} />,
-                color: '#3b5998'
               },
             ].map(({ href, label, icon, color }) => (
               <li key={label}>
@@ -140,60 +114,6 @@ const Contact = () => {
             ))}
           </ul>
         </div>
-
-          <form className="flex flex-col gap-8 bg-white/10 backdrop-blur-md p-8 md:p-12 border border-white/10 shadow-2xl mt-12 lg:mt-0" onSubmit={handleSubmit}>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="flex flex-col gap-2 group">
-              <label className="text-[0.62rem] font-medium tracking-[0.2em] uppercase text-white/60 transition-colors group-focus-within:text-[#D8B7B0]">Nombre</label>
-              <input 
-                type="text" 
-                placeholder="Tu nombre completo"
-                className="bg-transparent border-b border-white/20 py-2.5 font-sans text-[0.9rem] font-light text-white outline-none transition-all focus:border-[#D8B7B0] placeholder:text-white/20" 
-              />
-            </div>
-            <div className="flex flex-col gap-2 group">
-              <label className="text-[0.62rem] font-medium tracking-[0.2em] uppercase text-white/60 transition-colors group-focus-within:text-[#D8B7B0]">Email</label>
-              <input 
-                type="email" 
-                placeholder="tu@email.com"
-                className="bg-transparent border-b border-white/20 py-2.5 font-sans text-[0.9rem] font-light text-white outline-none transition-all focus:border-[#D8B7B0] placeholder:text-white/20" 
-              />
-            </div>
-          </div>
-          
-          <div className="flex flex-col gap-2 group relative">
-            <label className="text-[0.62rem] font-medium tracking-[0.2em] uppercase text-white/60 transition-colors group-focus-within:text-[#D8B7B0]">Tipo de Proyecto</label>
-            <div className="relative">
-              <select className="w-full bg-transparent border-b border-white/20 py-2.5 font-sans text-[0.9rem] font-light text-white outline-none focus:border-[#D8B7B0] appearance-none rounded-none cursor-pointer">
-                <option value="" className="bg-[#1a1a1a]">Selecciona una opción...</option>
-                <option className="bg-[#1a1a1a]">Edición de Reels</option>
-                <option className="bg-[#1a1a1a]">Video Institucional / Storytelling</option>
-                <option className="bg-[#1a1a1a]">Drone Work</option>
-                <option className="bg-[#1a1a1a]">Fotografía</option>
-                <option className="bg-[#1a1a1a]">Otro</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-2 group">
-            <label className="text-[0.62rem] font-medium tracking-[0.2em] uppercase text-white/60 transition-colors group-focus-within:text-[#D8B7B0]">Mensaje</label>
-            <textarea 
-              placeholder="¿En qué puedo ayudarte?"
-              className="bg-transparent border-b border-white/20 py-2.5 font-sans text-[0.9rem] font-light text-white outline-none transition-all focus:border-[#D8B7B0] resize-none min-h-[100px] placeholder:text-white/20" 
-            />
-          </div>
-
-          <button 
-            type="submit" 
-            className={`group relative overflow-hidden font-sans text-[0.7rem] font-medium tracking-[0.25em] uppercase px-12 py-4 transition-all duration-500 self-start mt-4 ${
-              isSent ? 'bg-[#D8B7B0] text-black' : 'bg-white text-black hover:bg-[#D8B7B0]'
-            }`}
-            disabled={isSent}
-          >
-            <span className="relative z-10">{isSent ? 'Mensaje Enviado ✓' : 'Enviar Mensaje'}</span>
-          </button>
-        </form>
       </div>
     </section>
   );

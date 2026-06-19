@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion, useSpring, useMotionValue, useTransform } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -9,7 +9,6 @@ gsap.registerPlugin(ScrollTrigger);
 const SOCIAL_LINKS = {
   instagram: 'https://instagram.com/TU_USUARIO',
   tiktok:    'https://tiktok.com/@TU_USUARIO',
-  facebook:  'https://facebook.com/TU_USUARIO',
 };
 
 const IconInstagram = () => (
@@ -26,16 +25,9 @@ const IconTikTok = () => (
   </svg>
 );
 
-const IconFacebook = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
-  </svg>
-);
-
 const socialButtons = [
   { key: 'instagram', Icon: IconInstagram, label: 'Instagram', color: '#E1306C' },
   { key: 'tiktok',    Icon: IconTikTok,    label: 'TikTok',    color: '#010101' },
-  { key: 'facebook',  Icon: IconFacebook,  label: 'Facebook',  color: '#1877F2' },
 ];
 
 // ─── iPhone Frame ────────────────────────────────────────────────────────────
@@ -48,8 +40,15 @@ const IPhoneFrame = ({ video, isActive, onClick }) => {
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ['-8deg', '8deg']);
 
   const frameRef = useRef(null);
-  const videoRef = useRef(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
+
+  useEffect(() => {
+    if (!isActive && videoRef.current) {
+      videoRef.current.pause();
+      setPlaying(false);
+    }
+  }, [isActive]);
 
   const handleVideoClick = (e) => {
     e.stopPropagation();
@@ -284,7 +283,21 @@ const IPhoneFrame = ({ video, isActive, onClick }) => {
 // ─── Main Section ─────────────────────────────────────────────────────────────
 const VideoWorkSection = () => {
   const sectionRef = useRef(null);
-  const [activeIndex, setActiveIndex] = useState(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  
+  const lastScrollRef = useRef(0);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [scrollVelocity, setScrollVelocity] = useState(0);
+
+  useEffect(() => {
+    return () => {
+      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+    };
+  }, []);
 
   const categories = [
     { name: 'Social Media', desc: 'Contenido optimizado para redes sociales.',  video: '/assets/video/work/social_media_1.mp4' },
@@ -293,23 +306,61 @@ const VideoWorkSection = () => {
     { name: 'Events',       desc: 'Cobertura y edición de eventos en vivo.',     video: '/assets/video/work/event_1.mov' },
   ];
 
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Autoplay carousel every 10 seconds on mobile, scrolling programmatically
+  useEffect(() => {
+    if (!isMobile) return;
+    
+    let interval: NodeJS.Timeout | null = null;
+    if (activeIndex === null && !isDragging) {
+      interval = setInterval(() => {
+        const nextSlide = (currentSlide + 1) % categories.length;
+        if (containerRef.current) {
+          const width = containerRef.current.offsetWidth;
+          containerRef.current.scrollTo({ left: nextSlide * width, behavior: 'smooth' });
+        }
+        setCurrentSlide(nextSlide);
+      }, 10000);
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isMobile, activeIndex, currentSlide, isDragging, categories.length]);
+
+  const handleNext = () => {
+    setCurrentSlide((prev) => Math.min(prev + 1, categories.length - 1));
+  };
+
+  const handlePrev = () => {
+    setCurrentSlide((prev) => Math.max(prev - 1, 0));
+  };
+
   useGSAP(() => {
-    const frames = gsap.utils.toArray('.iphone-frame');
-    frames.forEach((frame, i) => {
-      gsap.from(frame, {
-        scrollTrigger: {
-          trigger: frame,
-          start: 'top 88%',
-          toggleActions: 'play none none reverse',
-        },
-        y: 80,
-        opacity: 0,
-        duration: 1.0,
-        delay: i * 0.12,
-        ease: 'power3.out',
+    if (!isMobile) {
+      const frames = gsap.utils.toArray('.iphone-frame');
+      frames.forEach((frame, i) => {
+        gsap.from(frame as HTMLElement, {
+          scrollTrigger: {
+            trigger: frame as HTMLElement,
+            start: 'top 88%',
+            toggleActions: 'play none none reverse',
+          },
+          y: 80,
+          opacity: 0,
+          duration: 1.0,
+          delay: i * 0.12,
+          ease: 'power3.out',
+        });
       });
-    });
-  }, { scope: sectionRef });
+    }
+  }, { scope: sectionRef, dependencies: [isMobile] });
 
   return (
     <section
@@ -317,7 +368,7 @@ const VideoWorkSection = () => {
       ref={sectionRef}
       style={{
         background: '#f7f4ef',
-        padding: '80px 24px 100px',
+        padding: isMobile ? '60px 16px 80px' : '80px 24px 100px',
         overflow: 'hidden',
         position: 'relative',
       }}
@@ -337,7 +388,7 @@ const VideoWorkSection = () => {
       />
 
       {/* Header */}
-      <div style={{ textAlign: 'center', marginBottom: '64px' }}>
+      <div style={{ textAlign: 'center', marginBottom: isMobile ? '40px' : '64px' }}>
         <span
           style={{
             fontSize: '0.62rem',
@@ -365,105 +416,236 @@ const VideoWorkSection = () => {
         </h2>
       </div>
 
-      {/* iPhone grid */}
-      <div
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          justifyContent: 'center',
-          gap: '32px',
-          maxWidth: '1100px',
-          margin: '0 auto',
-          alignItems: 'flex-end',
-        }}
-      >
-        {categories.map((cat, i) => (
-          <div
-            key={i}
+      {isMobile ? (
+        <>
+          <div 
+            ref={containerRef} 
+            className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none w-full max-w-[300px] mx-auto"
             style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: '20px',
-              /* Stagger vertical offset for visual rhythm */
-              marginTop: i % 2 === 1 ? '40px' : '0',
+              scrollBehavior: 'smooth',
+              WebkitOverflowScrolling: 'touch',
+            }}
+            onTouchStart={() => {
+              setIsDragging(true);
+              setActiveIndex(null);
+            }}
+            onTouchEnd={() => {
+              setIsDragging(false);
+            }}
+            onScroll={(e) => {
+              const width = e.currentTarget.offsetWidth;
+              const currentScroll = e.currentTarget.scrollLeft;
+
+              // Calcular la velocidad/dirección del scroll
+              const delta = currentScroll - lastScrollRef.current;
+              lastScrollRef.current = currentScroll;
+
+              // Limitar el delta para que no gire de forma exagerada
+              const velocity = Math.max(-40, Math.min(40, delta));
+              setScrollVelocity(velocity);
+
+              if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+              scrollTimeoutRef.current = setTimeout(() => {
+                setScrollVelocity(0);
+              }, 80);
+
+              if (width > 0) {
+                const slide = Math.round(currentScroll / width);
+                if (slide !== currentSlide) {
+                  setCurrentSlide(slide);
+                }
+              }
             }}
           >
-            <IPhoneFrame
-              video={cat.video}
-              isActive={activeIndex === i}
-              onClick={() => setActiveIndex(activeIndex === i ? null : i)}
-            />
-
-            {/* Label below phone */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 + 0.3 }}
-              style={{ textAlign: 'center' }}
-            >
-              <p
-                style={{
-                  fontFamily: 'Georgia, serif',
-                  fontSize: '1rem',
-                  fontWeight: 400,
-                  color: '#1a1714',
-                  margin: '0 0 4px',
-                }}
+            {categories.map((cat, i) => (
+              <div
+                key={i}
+                className="min-w-full snap-center flex flex-col items-center gap-5 px-8 shrink-0"
               >
-                {cat.name}
-              </p>
-              <p
-                style={{
-                  fontSize: '0.75rem',
-                  color: '#888',
-                  margin: '0 0 12px',
-                  maxWidth: '180px',
-                  lineHeight: 1.5,
-                }}
-              >
-                {cat.desc}
-              </p>
+                <IPhoneFrame
+                  video={cat.video}
+                  isActive={activeIndex === i}
+                  onClick={() => setActiveIndex(activeIndex === i ? null : i)}
+                />
 
-              {/* Social icons */}
-              <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                {socialButtons.map(({ key, Icon, label, color }) => (
-                  <a
-                    key={key}
-                    href={SOCIAL_LINKS[key]}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={label}
+                <div style={{ textAlign: 'center' }}>
+                  <p
                     style={{
-                      width: '32px',
-                      height: '32px',
-                      borderRadius: '50%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      background: 'rgba(0,0,0,0.05)',
-                      border: `1px solid ${color}33`,
-                      color: color,
-                      transition: 'transform 0.2s, border-color 0.2s',
-                      textDecoration: 'none',
-                    }}
-                    onMouseEnter={e => {
-                      e.currentTarget.style.transform = 'scale(1.15)';
-                      e.currentTarget.style.borderColor = color + '88';
-                    }}
-                    onMouseLeave={e => {
-                      e.currentTarget.style.transform = 'scale(1)';
-                      e.currentTarget.style.borderColor = color + '33';
+                      fontFamily: 'Georgia, serif',
+                      fontSize: '1rem',
+                      fontWeight: 400,
+                      color: '#1a1714',
+                      margin: '0 0 4px',
                     }}
                   >
-                    <Icon />
-                  </a>
-                ))}
+                    {cat.name}
+                  </p>
+                  <p
+                    style={{
+                      fontSize: '0.75rem',
+                      color: '#888',
+                      margin: '0 0 12px',
+                      maxWidth: '220px',
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    {cat.desc}
+                  </p>
+
+                  {/* Social icons */}
+                  <div style={{ display: 'flex', gap: '8px', justifyHeight: 'center', justifyContent: 'center' }}>
+                    {socialButtons.map(({ key, Icon, label, color }) => (
+                      <a
+                        key={key}
+                        href={SOCIAL_LINKS[key as keyof typeof SOCIAL_LINKS]}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={label}
+                        style={{
+                          width: '32px',
+                          height: '32px',
+                          borderRadius: '50%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          background: 'rgba(0,0,0,0.05)',
+                          border: `1px solid ${color}33`,
+                          color: color,
+                          transition: 'transform 0.2s, border-color 0.2s',
+                          textDecoration: 'none',
+                        }}
+                      >
+                        <Icon />
+                      </a>
+                    ))}
+                  </div>
+                </div>
               </div>
-            </motion.div>
+            ))}
           </div>
-        ))}
-      </div>
+
+          {/* Dots Indicator */}
+          <div className="flex justify-center gap-1.5 mt-6">
+            {categories.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => {
+                  if (containerRef.current) {
+                    const width = containerRef.current.offsetWidth;
+                    containerRef.current.scrollTo({ left: idx * width, behavior: 'smooth' });
+                  }
+                  setCurrentSlide(idx);
+                }}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  idx === currentSlide ? 'w-5 bg-[#e02020]' : 'w-1.5 bg-dark/20'
+                }`}
+                style={{ border: 'none', outline: 'none', cursor: 'pointer' }}
+                aria-label={`Ir al slide ${idx + 1}`}
+              />
+            ))}
+          </div>
+        </>
+      ) : (
+        /* Desktop View - Original Staggered Grid */
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            gap: '32px',
+            maxWidth: '1100px',
+            margin: '0 auto',
+            alignItems: 'flex-end',
+          }}
+        >
+          {categories.map((cat, i) => (
+            <div
+              key={i}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '20px',
+                /* Stagger vertical offset for visual rhythm */
+                marginTop: i % 2 === 1 ? '40px' : '0',
+              }}
+            >
+              <IPhoneFrame
+                video={cat.video}
+                isActive={activeIndex === i}
+                onClick={() => setActiveIndex(activeIndex === i ? null : i)}
+              />
+
+              {/* Label below phone */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 + 0.3 }}
+                style={{ textAlign: 'center' }}
+              >
+                <p
+                  style={{
+                    fontFamily: 'Georgia, serif',
+                    fontSize: '1rem',
+                    fontWeight: 400,
+                    color: '#1a1714',
+                    margin: '0 0 4px',
+                  }}
+                >
+                  {cat.name}
+                </p>
+                <p
+                  style={{
+                    fontSize: '0.75rem',
+                    color: '#888',
+                    margin: '0 0 12px',
+                    maxWidth: '180px',
+                    lineHeight: 1.5,
+                  }}
+                >
+                  {cat.desc}
+                </p>
+
+                {/* Social icons */}
+                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                  {socialButtons.map(({ key, Icon, label, color }) => (
+                    <a
+                      key={key}
+                      href={SOCIAL_LINKS[key as keyof typeof SOCIAL_LINKS]}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={label}
+                      style={{
+                        width: '32px',
+                        height: '32px',
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: 'rgba(0,0,0,0.05)',
+                        border: `1px solid ${color}33`,
+                        color: color,
+                        transition: 'transform 0.2s, border-color 0.2s',
+                        textDecoration: 'none',
+                      }}
+                      onMouseEnter={e => {
+                        e.currentTarget.style.transform = 'scale(1.15)';
+                        e.currentTarget.style.borderColor = color + '88';
+                      }}
+                      onMouseLeave={e => {
+                        e.currentTarget.style.transform = 'scale(1)';
+                        e.currentTarget.style.borderColor = color + '33';
+                      }}
+                    >
+                      <Icon />
+                    </a>
+                  ))}
+                </div>
+              </motion.div>
+            </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 };

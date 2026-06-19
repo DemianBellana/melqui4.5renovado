@@ -10,7 +10,6 @@ gsap.registerPlugin(ScrollTrigger);
 const SOCIAL_LINKS = {
   instagram: 'https://instagram.com/TU_USUARIO',
   tiktok:    'https://tiktok.com/@TU_USUARIO',
-  facebook:  'https://facebook.com/TU_USUARIO',
 };
 
 const IconInstagram = () => (
@@ -27,16 +26,9 @@ const IconTikTok = () => (
   </svg>
 );
 
-const IconFacebook = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
-  </svg>
-);
-
 const socialButtons = [
   { key: 'instagram', Icon: IconInstagram, label: 'Instagram', color: '#E1306C' },
   { key: 'tiktok',    Icon: IconTikTok,    label: 'TikTok',    color: '#010101' },
-  { key: 'facebook',  Icon: IconFacebook,  label: 'Facebook',  color: '#1877F2' },
 ];
 
 const CategoryCarousel = ({ photos, title, onImageClick, globalOffset }: { 
