@@ -300,16 +300,8 @@ const VideoWorkSection = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  
   const lastScrollRef = useRef(0);
-  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const [scrollVelocity, setScrollVelocity] = useState(0);
 
-  useEffect(() => {
-    return () => {
-      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
-    };
-  }, []);
 
   const categories = [
     { name: 'Social Media', desc: 'Contenido optimizado para redes sociales.',  video: '/assets/video/work/social_media_1.mp4' },
@@ -329,7 +321,7 @@ const VideoWorkSection = () => {
   useEffect(() => {
     if (!isMobile) return;
     
-    let interval: NodeJS.Timeout | null = null;
+    let interval: any = null;
     if (activeIndex === null && !isDragging) {
       interval = setInterval(() => {
         const nextSlide = (currentSlide + 1) % categories.length;
@@ -345,14 +337,6 @@ const VideoWorkSection = () => {
       if (interval) clearInterval(interval);
     };
   }, [isMobile, activeIndex, currentSlide, isDragging, categories.length]);
-
-  const handleNext = () => {
-    setCurrentSlide((prev) => Math.min(prev + 1, categories.length - 1));
-  };
-
-  const handlePrev = () => {
-    setCurrentSlide((prev) => Math.max(prev - 1, 0));
-  };
 
   useGSAP(() => {
     if (!isMobile) {
@@ -449,17 +433,7 @@ const VideoWorkSection = () => {
               const currentScroll = e.currentTarget.scrollLeft;
 
               // Calcular la velocidad/dirección del scroll
-              const delta = currentScroll - lastScrollRef.current;
               lastScrollRef.current = currentScroll;
-
-              // Limitar el delta para que no gire de forma exagerada
-              const velocity = Math.max(-40, Math.min(40, delta));
-              setScrollVelocity(velocity);
-
-              if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
-              scrollTimeoutRef.current = setTimeout(() => {
-                setScrollVelocity(0);
-              }, 80);
 
               if (width > 0) {
                 const slide = Math.round(currentScroll / width);
