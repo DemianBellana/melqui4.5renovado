@@ -24,6 +24,10 @@ body {
   overflow-x: hidden;
 }
 
+#photography {
+  overflow-anchor: none;
+}
+
 /* Animaciones originales */
 @keyframes scrollDown {
   0%, 100% { transform: scaleY(1); opacity: 0.6; }
