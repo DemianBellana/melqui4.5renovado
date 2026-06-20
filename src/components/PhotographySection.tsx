@@ -103,7 +103,7 @@ const featuredPhotos = [
     title: 'Casas blancas',
     rotation: 2,
     top: '1%',
-    right: '18%',
+    right: '23%',
     width: '17%',
     tapeStyle: { transform: 'rotate(5deg)', top: '-12px', width: '80px' }
   },
@@ -122,7 +122,7 @@ const featuredPhotos = [
     src: '/assets/photo/travel/IMG_7132.AVIF',
     title: 'Costa rocosa',
     rotation: -2,
-    top: '40%',
+    top: '32%',
     right: '10%',
     width: '19%',
     tapeStyle: { transform: 'rotate(-3deg)', top: '-14px', width: '75px' }
@@ -315,6 +315,13 @@ const PhotographySection = () => {
     setMobileIndex(0);
   }, [activeCategory]);
 
+  const lastInteractionTimeRef = useRef(Date.now());
+
+  // Reset interaction timer on state changes (both user and automatic slides)
+  useEffect(() => {
+    lastInteractionTimeRef.current = Date.now();
+  }, [activeCategory, mobileIndex]);
+
   // Get active images based on selected category
   const visiblePhotos = (() => {
     if (activeCategory === 'Featured') {
@@ -388,11 +395,13 @@ const PhotographySection = () => {
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
+    lastInteractionTimeRef.current = Date.now();
     if (isAnimatingRef.current) return;
     touchStartRef.current = e.targetTouches[0].clientX;
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
+    lastInteractionTimeRef.current = Date.now();
     if (touchStartRef.current === null || isAnimatingRef.current) return;
     const touchEnd = e.changedTouches[0].clientX;
     const diff = touchStartRef.current - touchEnd;
@@ -405,6 +414,52 @@ const PhotographySection = () => {
     }
     touchStartRef.current = null;
   };
+
+  const handleAutoPlaySlide = () => {
+    if (isAnimatingRef.current || sliderItems.length <= 1) return;
+    isAnimatingRef.current = true;
+    
+    // Choose random direction
+    const direction = Math.random() > 0.5 ? 'next' : 'prev';
+    
+    // Choose random next index different from current index
+    let nextIndex = mobileIndex;
+    while (nextIndex === mobileIndex) {
+      nextIndex = Math.floor(Math.random() * sliderItems.length);
+    }
+    
+    const exitX = direction === 'next' ? -250 : 250;
+    const exitY = 350;
+    const exitRotation = direction === 'next' ? -35 : 35;
+    
+    gsap.to('.mobile-polaroid-active', {
+      x: exitX,
+      y: exitY,
+      rotation: exitRotation,
+      opacity: 0,
+      duration: 0.45,
+      ease: 'power2.in',
+      onComplete: () => {
+        setSlideDirection(direction);
+        setMobileIndex(nextIndex);
+      }
+    });
+  };
+
+  // Autoplay interval for mobile only
+  useEffect(() => {
+    const isLargeScreen = window.innerWidth >= 1024;
+    if (isLargeScreen) return;
+
+    const interval = setInterval(() => {
+      const timeSinceLastInteraction = Date.now() - lastInteractionTimeRef.current;
+      if (selectedImageIndex === null && timeSinceLastInteraction >= 6000) {
+        handleAutoPlaySlide();
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [mobileIndex, sliderItems, selectedImageIndex]);
 
   const handleLightboxTouchStart = (e: React.TouchEvent) => {
     lightboxTouchStartRef.current = e.targetTouches[0].clientX;
@@ -854,9 +909,9 @@ const PhotographySection = () => {
                   >
                     {/* Washi Tape */}
                     <div 
-                      className="absolute left-1/2 -translate-x-1/2 bg-[#efebd8]/70 backdrop-blur-[0.5px] border border-black/[0.01] shadow-[0_1px_3px_rgba(0,0,0,0.01)] z-10"
+                      className="absolute left-1/2 -translate-x-1/2 bg-[#e6ddc2]/90 backdrop-blur-[1px] border border-black/[0.06] shadow-[0_2px_4px_rgba(0,0,0,0.06)] z-10"
                       style={{
-                        height: '24px',
+                        height: '32px',
                         clipPath: 'polygon(5% 0%, 95% 0%, 100% 25%, 98% 75%, 100% 100%, 0% 100%, 2% 50%)',
                         ...photo.tapeStyle
                       }}
