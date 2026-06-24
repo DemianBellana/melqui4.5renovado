@@ -6,6 +6,9 @@ export default {
   ],
   theme: {
     extend: {
+      screens: {
+        'lg': '1025px',
+      },
       colors: {
         cream: '#f5f0e8',
         'warm-white': '#faf8f4',

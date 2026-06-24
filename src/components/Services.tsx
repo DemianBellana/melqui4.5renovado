@@ -21,7 +21,7 @@ const Services = () => {
   ];
 
   return (
-    <section className="px-6 py-16 md:px-16 md:py-28 bg-cream" id="services">
+    <section className="px-6 py-16 lg:px-16 lg:py-28 bg-cream" id="services">
       <div className="text-center mb-16">
         <span className="text-[0.62rem] font-light tracking-[0.28em] uppercase text-accent mb-6">
           Offerings
@@ -31,11 +31,11 @@ const Services = () => {
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-[1100px] mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 max-w-[1100px] mx-auto">
         {offerings.map((service, index) => (
           <div 
             key={index} 
-            className="bg-warm-white p-10 md:p-12 text-center border border-[rgba(160,140,120,0.15)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_50px_rgba(20,17,14,0.08)]"
+            className="bg-warm-white p-10 lg:p-12 text-center border border-[rgba(160,140,120,0.15)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_50px_rgba(20,17,14,0.08)]"
           >
             <div className="font-serif text-[2.8rem] italic font-light text-accent mb-6">
               {service.icon}

@@ -10,7 +10,7 @@ const ReelsSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const iphoneRef = useRef<HTMLDivElement>(null);
-  
+
   const frameRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
@@ -77,7 +77,7 @@ const ReelsSection = () => {
         console.warn("Video play interrupted:", err);
       });
     }
-    else            { vid.pause(); }
+    else { vid.pause(); }
   };
 
   const toggleMute = (e: React.MouseEvent) => {
@@ -88,34 +88,34 @@ const ReelsSection = () => {
   };
 
   return (
-    <section 
-      id="reels" 
+    <section
+      id="reels"
       ref={containerRef}
-      className="min-h-[90vh] bg-[#D8B7B0] overflow-hidden flex items-center justify-center py-20"
+      className="min-h-[90vh] bg-[#D8B7B0] overflow-hidden flex items-center justify-center py-20 @container"
     >
       <div className="max-w-[1200px] w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-0 items-center">
         {/* Columna Izquierda: Texto */}
-        <div 
+        <div
           ref={textRef}
-          className="flex flex-col justify-center px-6 lg:px-20 z-10 order-2 lg:order-1"
+          className="flex flex-col justify-center items-start md:items-center lg:items-start text-left md:text-center lg:text-left px-6 lg:px-20 z-10 order-2 lg:order-1"
         >
-          <span className="text-[0.62rem] font-light tracking-[0.28em] uppercase text-[#161616] opacity-70 mb-6">
+          <span className="text-[0.62rem] md:text-[0.82rem] lg:text-[clamp(0.8rem,_calc(0.04_*_30cqw),_0.95rem)] font-bold tracking-[0.28em] uppercase text-[#161616] opacity-70 mb-6">
             01. Edición de Reels
           </span>
-          <h2 className="font-serif text-[clamp(2rem,3.5vw,3.2rem)] font-light leading-[1.18] text-[#161616] mb-6">
+          <h2 className="font-serif text-[clamp(2rem,3.5vw,3.2rem)] md:text-[clamp(2.5rem,4.5vw,3.8rem)] lg:text-[clamp(2.6rem,_calc(0.165_*_30cqw),_4.2rem)] font-light leading-[1.18] text-[#161616] mb-6">
             Contenido que<br /><em className="italic text-white">atrapa en segundos</em>
           </h2>
-          <p className="text-[0.88rem] font-light leading-[1.85] text-[#161616] opacity-80 max-w-[42ch] mb-9">
+          <p className="text-[0.88rem] md:text-[1.1rem] lg:text-[clamp(1.1rem,_calc(0.058_*_30cqw),_1.3rem)] font-light leading-[1.85] text-[#161616] opacity-80 max-w-[42ch] mb-9 mx-0 md:mx-auto lg:mx-0">
             Edición dinámica pensada para el formato vertical. Transiciones fluidas, ritmo visual y storytelling condensado para maximizar el engagement en plataformas como Instagram y TikTok.
           </p>
-          <p className="text-[0.88rem] font-light leading-[1.85] text-[#161616] opacity-80 max-w-[42ch] mb-9">
+          <p className="text-[0.88rem] md:text-[1.1rem] lg:text-[clamp(1.1rem,_calc(0.058_*_30cqw),_1.3rem)] font-light leading-[1.85] text-[#161616] opacity-80 max-w-[42ch] mb-9 mx-0 md:mx-auto lg:mx-0">
             Esta pieza recopila mis mejores trabajos, demostrando mi capacidad para captar la atención y contar historias potentes en formatos breves.
           </p>
-          <div className="mt-6 flex items-center gap-4">
+          <div className="mt-6 flex items-center gap-4 justify-start md:justify-center lg:justify-start">
             <div className="w-10 h-10 rounded-full border border-[#161616]/20 flex items-center justify-center">
               <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
             </div>
-            <span className="text-[0.7rem] uppercase tracking-widest text-[#161616] opacity-70 font-medium">
+            <span className="text-[0.7rem] md:text-[0.9rem] lg:text-[clamp(0.8rem,_calc(0.045_*_30cqw),_1rem)] uppercase tracking-widest text-[#161616] opacity-70 font-medium">
               Formato Vertical 9:16
             </span>
           </div>
@@ -180,11 +180,11 @@ const ReelsSection = () => {
                         >
                           {isMuted ? (
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>
+                              <path d="M11 5L6 9H2v6h4l5 4V5z" /><line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" />
                             </svg>
                           ) : (
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                              <path d="M11 5L6 9H2v6h4l5 4V5z" /><path d="M19.07 4.93a10 10 0 0 1 0 14.14" /><path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
                             </svg>
                           )}
                         </button>
@@ -194,19 +194,19 @@ const ReelsSection = () => {
                       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '18px', marginBottom: '24px' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
                           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))' }}>
-                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                           </svg>
                           <span style={{ fontSize: '10px', fontWeight: 500 }}>98.5k</span>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
                           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))' }}>
-                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-14c.9 0 1.8.2 2.6.6L21 3l-1.4 5.5L21 11.5z"/>
+                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-14c.9 0 1.8.2 2.6.6L21 3l-1.4 5.5L21 11.5z" />
                           </svg>
                           <span style={{ fontSize: '10px', fontWeight: 500 }}>4.2k</span>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
                           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))' }}>
-                            <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                            <line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />
                           </svg>
                           <span style={{ fontSize: '10px', fontWeight: 500 }}>Share</span>
                         </div>
@@ -225,7 +225,7 @@ const ReelsSection = () => {
                         }}
                       >
                         <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: 'rgba(255,255,255,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>
-                          <svg width="18" height="18" viewBox="0 0 24 24" fill="#111"><polygon points="5,3 19,12 5,21"/></svg>
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="#111"><polygon points="5,3 19,12 5,21" /></svg>
                         </div>
                       </div>
                     )}
@@ -241,7 +241,7 @@ const ReelsSection = () => {
                 </div>
 
                 {/* Side buttons */}
-                <div style={{ position: 'absolute', left: '-4px', top: '80px',  width: '4px', height: '28px', background: '#2a2a2a', borderRadius: '2px 0 0 2px' }} />
+                <div style={{ position: 'absolute', left: '-4px', top: '80px', width: '4px', height: '28px', background: '#2a2a2a', borderRadius: '2px 0 0 2px' }} />
                 <div style={{ position: 'absolute', left: '-4px', top: '118px', width: '4px', height: '44px', background: '#2a2a2a', borderRadius: '2px 0 0 2px' }} />
                 <div style={{ position: 'absolute', left: '-4px', top: '172px', width: '4px', height: '44px', background: '#2a2a2a', borderRadius: '2px 0 0 2px' }} />
                 <div style={{ position: 'absolute', right: '-4px', top: '110px', width: '4px', height: '64px', background: '#2a2a2a', borderRadius: '0 2px 2px 0' }} />

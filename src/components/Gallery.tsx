@@ -9,7 +9,7 @@ const Gallery = () => {
     {
       url: 'https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=1200&auto=format&fit=crop&q=80',
       caption: 'Golden hour ceremony',
-      className: 'md:col-span-2 aspect-[16/10]'
+      className: 'lg:col-span-2 aspect-[16/10]'
     },
     {
       url: 'https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=800&auto=format&fit=crop&q=80',
@@ -29,7 +29,7 @@ const Gallery = () => {
     {
       url: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1200&auto=format&fit=crop&q=80',
       caption: 'First dance',
-      className: 'md:col-span-2 aspect-[16/10]'
+      className: 'lg:col-span-2 aspect-[16/10]'
     }
   ];
 
@@ -48,7 +48,7 @@ const Gallery = () => {
   };
 
   return (
-    <section className="px-6 py-14 md:px-16 md:py-24 bg-warm-white" id="portfolio">
+    <section className="px-6 py-14 lg:px-16 lg:py-24 bg-warm-white" id="portfolio">
       <div className="text-center mb-14">
         <span className="text-[0.62rem] font-light tracking-[0.28em] uppercase text-accent mb-6">
           Portfolio
@@ -58,7 +58,7 @@ const Gallery = () => {
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2.5">
         {photos.map((photo, index) => (
           <div 
             key={index} 
@@ -98,7 +98,7 @@ const Gallery = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSelectedImage(null)}
-            className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4 md:p-10"
+            className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4 lg:p-10"
           >
             <button 
               className="absolute top-6 right-6 text-white/70 hover:text-white transition-colors z-[110]"
@@ -108,14 +108,14 @@ const Gallery = () => {
             </button>
 
             <button 
-              className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors z-[110] bg-black/20 p-2 rounded-full"
+              className="absolute left-4 lg:left-8 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors z-[110] bg-black/20 p-2 rounded-full"
               onClick={handlePrev}
             >
               <ChevronLeft size={40} strokeWidth={1} />
             </button>
 
             <button 
-              className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors z-[110] bg-black/20 p-2 rounded-full"
+              className="absolute right-4 lg:right-8 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors z-[110] bg-black/20 p-2 rounded-full"
               onClick={handleNext}
             >
               <ChevronRight size={40} strokeWidth={1} />

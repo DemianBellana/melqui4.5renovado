@@ -32,7 +32,7 @@ const About = () => {
         console.warn("Video play interrupted:", err);
       });
     }
-    else            { vid.pause(); }
+    else { vid.pause(); }
   };
 
   const toggleMute = (e: React.MouseEvent) => {
@@ -43,7 +43,7 @@ const About = () => {
   };
 
   return (
-    <section id="about" className="grid grid-cols-1 lg:grid-cols-2 min-h-[85vh] bg-[#D8B7B0] overflow-hidden">
+    <section id="about" className="grid grid-cols-1 lg:grid-cols-2 min-h-[85vh] bg-[#D8B7B0] overflow-hidden @container">
 
       {/* Columna Izquierda: iPhone CSS puro igual que VideoWork */}
       <div className="relative flex items-center justify-center py-20 lg:py-0 bg-[#D8B7B0]">
@@ -109,17 +109,17 @@ const About = () => {
                     >
                       {isMuted ? (
                         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>
+                          <path d="M11 5L6 9H2v6h4l5 4V5z" /><line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" />
                         </svg>
                       ) : (
                         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                          <path d="M11 5L6 9H2v6h4l5 4V5z" /><path d="M19.07 4.93a10 10 0 0 1 0 14.14" /><path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
                         </svg>
                       )}
                     </button>
                     <div style={{ background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(8px)', borderRadius: '8px', padding: '6px', border: '1px solid rgba(255,255,255,0.1)', display: 'flex' }}>
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
                       </svg>
                     </div>
                   </div>
@@ -128,19 +128,19 @@ const About = () => {
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '20px', marginBottom: '24px', marginRight: '4px' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="1">
-                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                       </svg>
                       <span style={{ fontSize: '9px', fontWeight: 600 }}>82.4k</span>
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="1">
-                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-14c.9 0 1.8.2 2.6.6L21 3l-1.4 5.5L21 11.5z"/>
+                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-14c.9 0 1.8.2 2.6.6L21 3l-1.4 5.5L21 11.5z" />
                       </svg>
                       <span style={{ fontSize: '9px', fontWeight: 600 }}>1.2k</span>
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
                       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                        <line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />
                       </svg>
                       <span style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.05em' }}>Share</span>
                     </div>
@@ -161,7 +161,7 @@ const About = () => {
                 >
                   {!playing && (
                     <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: 'rgba(255,255,255,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="#111"><polygon points="5,3 19,12 5,21"/></svg>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="#111"><polygon points="5,3 19,12 5,21" /></svg>
                     </div>
                   )}
                 </motion.div>
@@ -177,7 +177,7 @@ const About = () => {
             </div>
 
             {/* Side buttons */}
-            <div style={{ position: 'absolute', left: '-4px', top: '80px',  width: '4px', height: '28px', background: '#2a2a2a', borderRadius: '2px 0 0 2px' }} />
+            <div style={{ position: 'absolute', left: '-4px', top: '80px', width: '4px', height: '28px', background: '#2a2a2a', borderRadius: '2px 0 0 2px' }} />
             <div style={{ position: 'absolute', left: '-4px', top: '118px', width: '4px', height: '44px', background: '#2a2a2a', borderRadius: '2px 0 0 2px' }} />
             <div style={{ position: 'absolute', left: '-4px', top: '172px', width: '4px', height: '44px', background: '#2a2a2a', borderRadius: '2px 0 0 2px' }} />
             <div style={{ position: 'absolute', right: '-4px', top: '110px', width: '4px', height: '64px', background: '#2a2a2a', borderRadius: '0 2px 2px 0' }} />
@@ -189,24 +189,24 @@ const About = () => {
       </div>
 
       {/* Columna Derecha: Texto */}
-      <div className="flex flex-col justify-center px-6 py-14 lg:px-24 lg:py-24 text-[#161616] bg-[#D8B7B0] relative z-10">
-        <span className="text-[0.62rem] font-light tracking-[0.28em] uppercase text-[#161616] opacity-70 mb-6">
+      <div className="flex flex-col justify-center items-start md:items-center lg:items-start text-left md:text-center lg:text-left px-6 py-14 lg:px-24 lg:py-24 text-[#161616] bg-[#D8B7B0] relative z-10">
+        <span className="text-[clamp(0.8rem,_calc(0.04_*_30cqw),_0.95rem)] font-bold tracking-[0.28em] uppercase text-[#161616] opacity-70 mb-6">
           Sobre Mí
         </span>
-        <h2 className="font-serif text-[clamp(2.5rem,4vw,3.5rem)] font-light leading-[1.18] text-[#161616] mb-8">
+        <h2 className="font-serif text-[clamp(2.6rem,_calc(0.165_*_30cqw),_4.2rem)] font-light leading-[1.18] text-[#161616] mb-8">
           Melisa <em className="italic text-white">Quiroga</em>
         </h2>
         <div className="space-y-6">
-          <p className="text-[1.05rem] font-light leading-[1.8] text-[#161616] opacity-80 max-w-[45ch]">
+          <p className="text-[clamp(1.1rem,_calc(0.058_*_30cqw),_1.3rem)] font-light leading-[1.8] text-[#161616] opacity-80 max-w-[45ch] mx-0 md:mx-auto lg:mx-0">
             Soy editora de video y creadora de contenido apasionada por contar historias visuales que conecten. Mi enfoque combina técnica cinematográfica con un ritmo dinámico adaptado a las tendencias actuales.
           </p>
-          <p className="text-[1.05rem] font-light leading-[1.8] text-[#161616] opacity-80 max-w-[45ch]">
+          <p className="text-[clamp(1.1rem,_calc(0.058_*_30cqw),_1.3rem)] font-light leading-[1.8] text-[#161616] opacity-80 max-w-[45ch] mx-0 md:mx-auto lg:mx-0">
             Desde la captura aérea con drones hasta la edición minuciosa de reels, busco siempre la excelencia visual y narrativa en cada proyecto en el que participo.
           </p>
         </div>
-        <div className="mt-14 flex items-center gap-5">
+        <div className="mt-14 flex items-center gap-5 justify-start md:justify-center lg:justify-start">
           <div className="h-px w-16 bg-[#161616] opacity-30" />
-          <span className="text-[0.7rem] font-light tracking-[0.35em] uppercase text-[#161616] opacity-60">
+          <span className="text-[clamp(0.8rem,_calc(0.045_*_30cqw),_1rem)] font-bold tracking-[0.35em] uppercase text-[#161616] opacity-60">
             Argentina & Worldwide
           </span>
         </div>

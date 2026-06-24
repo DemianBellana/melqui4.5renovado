@@ -1,0 +1,249 @@
+diff --git a/src/components/PhotographySection.tsx b/src/components/PhotographySection.tsx
+index 3b178c4..cc90ea6 100644
+--- a/src/components/PhotographySection.tsx
++++ b/src/components/PhotographySection.tsx
+@@ -9,45 +9,38 @@ gsap.registerPlugin(ScrollTrigger);
+ 
+ const SOCIAL_LINKS = {
+   instagram: 'https://instagram.com/TU_USUARIO',
+-  tiktok:    'https://tiktok.com/@TU_USUARIO',
+-  facebook:  'https://facebook.com/TU_USUARIO',
++  tiktok: 'https://tiktok.com/@TU_USUARIO',
+ };
+ 
+ const IconInstagram = () => (
+   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+-    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+-    <circle cx="12" cy="12" r="4"/>
+-    <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none"/>
++    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
++    <circle cx="12" cy="12" r="4" />
++    <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none" />
+   </svg>
+ );
+ 
+ const IconTikTok = () => (
+   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+-    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"/>
+-  </svg>
+-);
+-
+-const IconFacebook = () => (
+-  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+-    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
++    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z" />
+   </svg>
+ );
+ 
+ const socialButtons = [
+   { key: 'instagram', Icon: IconInstagram, label: 'Instagram', color: '#E1306C' },
+-  { key: 'tiktok',    Icon: IconTikTok,    label: 'TikTok',    color: '#010101' },
+-  { key: 'facebook',  Icon: IconFacebook,  label: 'Facebook',  color: '#1877F2' },
++  { key: 'tiktok', Icon: IconTikTok, label: 'TikTok', color: '#010101' },
+ ];
+ 
+-const CategoryCarousel = ({ photos, title, onImageClick, globalOffset }: { 
+-  photos: string[], 
+-  title: string, 
++const CategoryCarousel = ({ photos, title, onImageClick, globalOffset }: {
++  photos: string[],
++  title: string,
+   onImageClick: (idx: number) => void,
+-  globalOffset: number 
++  globalOffset: number
+ }) => {
+   const [currentIndex, setCurrentIndex] = useState(0);
+   const [isMobile, setIsMobile] = useState(false);
+   const timerRef = useRef<NodeJS.Timeout | null>(null);
++  const scrollContainerRef = useRef<HTMLDivElement>(null);
+ 
+   useEffect(() => {
+     const checkMobile = () => setIsMobile(window.innerWidth < 768);
+@@ -72,15 +65,18 @@ const CategoryCarousel = ({ photos, title, onImageClick, globalOffset }: {
+     };
+   }, [isMobile, photos.length]);
+ 
+-  const handleNext = () => {
+-    setCurrentIndex((prev) => (prev + 1) % photos.length);
+-    resetTimer();
+-  };
+-
+-  const handlePrev = () => {
+-    setCurrentIndex((prev) => (prev - 1 + photos.length) % photos.length);
+-    resetTimer();
+-  };
++  useEffect(() => {
++    if (isMobile && scrollContainerRef.current) {
++      const container = scrollContainerRef.current;
++      const targetScroll = currentIndex * container.clientWidth;
++      if (Math.abs(container.scrollLeft - targetScroll) > 10) {
++        container.scrollTo({
++          left: targetScroll,
++          behavior: 'smooth'
++        });
++      }
++    }
++  }, [currentIndex, isMobile]);
+ 
+   if (!isMobile) {
+     return (
+@@ -116,46 +112,56 @@ const CategoryCarousel = ({ photos, title, onImageClick, globalOffset }: {
+   }
+ 
+   return (
+-    <div 
+-      className="relative overflow-hidden touch-pan-y"
+-      onPointerDown={() => { if (timerRef.current) clearInterval(timerRef.current); }}
+-      onPointerUp={resetTimer}
+-      onPointerLeave={resetTimer}
+-    >
+-      <motion.div 
+-        className="flex"
+-        animate={{ x: `-${currentIndex * 100}%` }}
+-        transition={{ type: "spring", damping: 30, stiffness: 200 }}
+-        drag="x"
+-        dragConstraints={{ left: 0, right: 0 }}
+-        dragElastic={0.7}
+-        onDragEnd={(_, info) => {
+-          const swipeThreshold = 50;
+-          if (info.offset.x < -swipeThreshold) handleNext();
+-          else if (info.offset.x > swipeThreshold) handlePrev();
+-          else resetTimer();
++    <div className="relative overflow-hidden touch-pan-y">
++      <div
++        ref={scrollContainerRef}
++        className="flex items-start overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar w-full"
++        onScroll={(e) => {
++          const target = e.currentTarget;
++          const scrollPosition = target.scrollLeft;
++          const width = target.clientWidth;
++          if (width > 0) {
++            const newIndex = Math.round(scrollPosition / width);
++            if (newIndex !== currentIndex) {
++              setCurrentIndex(newIndex);
++              resetTimer();
++            }
++          }
+         }}
++        onTouchStart={() => { if (timerRef.current) clearInterval(timerRef.current); }}
++        onTouchEnd={resetTimer}
+       >
+         {photos.map((photo, idx) => (
+-          <div key={idx} className="min-w-full aspect-[3/4] px-1">
++          <div 
++            key={idx} 
++            style={{ flexShrink: 0 }}
++            className="min-w-full aspect-[3/4] px-1 snap-center cursor-pointer"
++            onClick={() => onImageClick(globalOffset + idx)}
++          >
+             <div className="w-full h-full overflow-hidden rounded-sm">
+               <img 
+                 src={photo} 
+                 alt={`${title} ${idx + 1}`} 
+-                className="w-full h-full object-cover pointer-events-none"
++                className="w-full h-full object-cover"
+               />
+             </div>
+           </div>
+         ))}
+-      </motion.div>
++      </div>
+       
+       <div className="flex justify-center gap-1.5 mt-4">
+         {photos.map((_, idx) => (
+-          <div 
++          <button
+             key={idx}
++            onClick={() => {
++              setCurrentIndex(idx);
++              resetTimer();
++            }}
+             className={`h-1 rounded-full transition-all duration-300 ${
+               idx === currentIndex ? 'w-4 bg-accent' : 'w-1 bg-dark/20'
+             }`}
++            style={{ border: 'none', padding: 0, cursor: 'pointer' }}
++            aria-label={`Go to slide ${idx + 1}`}
+           />
+         ))}
+       </div>
+@@ -169,7 +175,7 @@ const PhotographySection = () => {
+ 
+   useGSAP(() => {
+     const categoryBlocks = gsap.utils.toArray('.category-block');
+-    
++
+     categoryBlocks.forEach((block: any) => {
+       const title = block.querySelector('.category-title');
+       const content = block.querySelector('.photo-grid') || block.querySelector('.relative.overflow-hidden');
+@@ -317,9 +323,9 @@ const PhotographySection = () => {
+               <h3 className="category-title font-serif text-2xl mb-8 border-l-2 border-accent pl-4 text-dark/80">
+                 {cat.title}
+               </h3>
+-              <CategoryCarousel 
+-                photos={cat.photos} 
+-                title={cat.title} 
++              <CategoryCarousel
++                photos={cat.photos}
++                title={cat.title}
+                 onImageClick={setSelectedImage}
+                 globalOffset={offset}
+               />
+@@ -357,35 +363,35 @@ const PhotographySection = () => {
+       {/* Lightbox */}
+       <AnimatePresence>
+         {selectedImage !== null && (
+-          <motion.div 
++          <motion.div
+             initial={{ opacity: 0 }}
+             animate={{ opacity: 1 }}
+             exit={{ opacity: 0 }}
+             onClick={() => setSelectedImage(null)}
+             className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4 md:p-10"
+           >
+-            <button 
++            <button
+               className="absolute top-6 right-6 text-white/70 hover:text-white transition-colors z-[110]"
+               onClick={() => setSelectedImage(null)}
+             >
+               <X size={32} strokeWidth={1.5} />
+             </button>
+ 
+-            <button 
++            <button
+               className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors z-[110] bg-black/20 p-2 rounded-full hidden md:block"
+               onClick={handlePrev}
+             >
+               <ChevronLeft size={40} strokeWidth={1} />
+             </button>
+ 
+-            <button 
++            <button
+               className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors z-[110] bg-black/20 p-2 rounded-full hidden md:block"
+               onClick={handleNext}
+             >
+               <ChevronRight size={40} strokeWidth={1} />
+             </button>
+ 
+-            <motion.div 
++            <motion.div
+               key={selectedImage}
+               initial={{ scale: 0.9, opacity: 0 }}
+               animate={{ scale: 1, opacity: 1 }}
+@@ -394,13 +400,13 @@ const PhotographySection = () => {
+               className="relative max-w-full max-h-full flex flex-col items-center"
+               onClick={(e) => e.stopPropagation()}
+             >
+-              <img 
+-                src={allPhotos[selectedImage]} 
++              <img
++                src={allPhotos[selectedImage]}
+                 alt="Selected"
+                 className="max-w-full max-h-[75vh] md:max-h-[80vh] object-contain shadow-2xl"
+               />
+-              
+-              <motion.div 
++
++              <motion.div
+                 initial={{ opacity: 0, y: 10 }}
+                 animate={{ opacity: 1, y: 0 }}
+                 transition={{ delay: 0.2 }}

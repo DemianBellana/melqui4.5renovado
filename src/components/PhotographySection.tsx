@@ -122,8 +122,8 @@ const featuredPhotos = [
     src: '/assets/photo/travel/IMG_7132.AVIF',
     title: 'Costa rocosa',
     rotation: -2,
-    top: '32%',
-    right: '10%',
+    top: '16%',
+    right: '3%',
     width: '19%',
     tapeStyle: { transform: 'rotate(-3deg)', top: '-14px', width: '75px' }
   },
@@ -213,48 +213,40 @@ const MOBILE_CATEGORIES = [
     src: '/assets/photo/travel/IMG_7126.AVIF',
     label: 'viajes',
     rotation: 6,
-    style: { top: '0%', right: '1%', width: '32%', zIndex: 15 },
-    tapeStyle: { transform: 'rotate(4deg)', top: '-8px', width: '40px' }
+    style: { top: '0%', right: '1%', width: '35%', zIndex: 15 },
+    tapeStyle: { transform: 'rotate(4deg)', top: '-8px', width: '45px' }
   },
   {
     category: 'SPORTS',
     src: '/assets/photo/sports/IMG_7085.AVIF',
     label: 'deportes',
     rotation: -6,
-    style: { top: '42%', left: '-2%', width: '32%', zIndex: 25 },
-    tapeStyle: { transform: 'rotate(-4deg)', top: '-8px', width: '40px' }
+    style: { top: '42%', left: '-2%', width: '35%', zIndex: 25 },
+    tapeStyle: { transform: 'rotate(-4deg)', top: '-8px', width: '45px' }
   },
   {
     category: 'PORTRAITS',
     src: '/assets/photo/travel/IMG_7130.AVIF',
     label: 'retratos',
     rotation: 4,
-    style: { top: '48%', right: '-2%', width: '32%', zIndex: 25 },
-    tapeStyle: { transform: 'rotate(3deg)', top: '-8px', width: '40px' }
+    style: { top: '48%', right: '-2%', width: '35%', zIndex: 25 },
+    tapeStyle: { transform: 'rotate(3deg)', top: '-8px', width: '45px' }
   },
   {
     category: 'EVENTS',
     src: '/assets/photo/travel/IMG_7132.AVIF',
     label: 'eventos',
     rotation: -3,
-    style: { bottom: '12%', left: '1%', width: '31%', zIndex: 25 },
-    tapeStyle: { transform: 'rotate(-3deg)', top: '-8px', width: '40px' }
+    style: { bottom: '12%', left: '1%', width: '34%', zIndex: 25 },
+    tapeStyle: { transform: 'rotate(-3deg)', top: '-8px', width: '45px' }
   },
   {
     category: 'All',
     src: '/assets/photo/travel/IMG_7128.AVIF',
     label: 'todos',
     rotation: 2,
-    style: { bottom: '8%', left: '34%', width: '32%', zIndex: 25 },
-    tapeStyle: { transform: 'rotate(2deg)', top: '-8px', width: '40px' }
-  },
-  {
-    category: 'Featured',
-    src: '/assets/photo/travel/IMG_7135.AVIF',
-    label: 'destacadas',
-    rotation: -4,
-    style: { bottom: '13%', right: '1%', width: '31%', zIndex: 25 },
-    tapeStyle: { transform: 'rotate(-2deg)', top: '-8px', width: '40px' }
+    style: { bottom: '8%', left: '34%', width: '35%', zIndex: 25 },
+    tapeStyle: { transform: 'rotate(2deg)', top: '-8px', width: '45px' }
   }
 ];
 
@@ -300,6 +292,13 @@ const PhotographySection = () => {
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
   const [activeCategory, setActiveCategory] = useState<string>('Featured');
   const sectionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const isLargeScreen = window.innerWidth >= 1025;
+    if (!isLargeScreen) {
+      setActiveCategory('All');
+    }
+  }, []);
 
   // Mobile slider states
   const [mobileIndex, setMobileIndex] = useState(0);
@@ -448,7 +447,7 @@ const PhotographySection = () => {
 
   // Autoplay interval for mobile only
   useEffect(() => {
-    const isLargeScreen = window.innerWidth >= 1024;
+    const isLargeScreen = window.innerWidth >= 1025;
     if (isLargeScreen) return;
 
     const interval = setInterval(() => {
@@ -480,7 +479,7 @@ const PhotographySection = () => {
   };
 
   useGSAP(() => {
-    const isLargeScreen = window.innerWidth >= 1024;
+    const isLargeScreen = window.innerWidth >= 1025;
 
     if (isLargeScreen) {
       if (activeCategory === 'Featured') {
@@ -687,7 +686,7 @@ const PhotographySection = () => {
     <section 
       id="photography" 
       ref={sectionRef} 
-      className="relative px-6 py-16 md:px-16 md:py-24 overflow-hidden select-none"
+      className="relative px-6 py-16 lg:px-16 lg:py-24 overflow-hidden select-none"
       style={{ 
         backgroundColor: '#f5efe6',
         backgroundImage: `url("${paperGrainUrl}")`,
@@ -941,7 +940,7 @@ const PhotographySection = () => {
             ) : (
               /* CLASSIC MASONRY GALLERY VIEW (Desktop Only) */
               <div key="gallery" className="pt-2">
-                <div className="photo-grid columns-2 md:columns-3 lg:columns-4 gap-5 space-y-5">
+                <div className="photo-grid columns-2 lg:columns-4 gap-5 space-y-5">
                   {visiblePhotos.map((photo, idx) => (
                     <div 
                       key={idx} 
@@ -1018,7 +1017,7 @@ const PhotographySection = () => {
                 >
                   {/* Washi Tape */}
                   <div 
-                    className="absolute left-1/2 -translate-x-1/2 bg-[#efebd8]/60 border border-black/[0.01]"
+                    className="absolute left-1/2 -translate-x-1/2 bg-[#e6ddc2]/90 border border-black/[0.04] shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
                     style={{
                       height: '14px',
                       clipPath: 'polygon(5% 0%, 95% 0%, 100% 25%, 98% 75%, 100% 100%, 0% 100%, 2% 50%)',
@@ -1038,7 +1037,7 @@ const PhotographySection = () => {
 
                   {/* Label (handwritten) */}
                   <p 
-                    className={`text-center mt-1 text-[0.72rem] leading-none select-none font-semibold ${
+                    className={`text-center mt-1 text-[0.85rem] leading-none select-none font-semibold ${
                       isActive ? 'text-[#e02020]' : 'text-dark/65'
                     }`}
                     style={{ fontFamily: "'Caveat', cursive" }}
@@ -1293,7 +1292,7 @@ const PhotographySection = () => {
             onClick={() => setSelectedImageIndex(null)}
             onTouchStart={handleLightboxTouchStart}
             onTouchEnd={handleLightboxTouchEnd}
-            className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4 md:p-10"
+            className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4 lg:p-10"
           >
             <button 
               className="absolute top-6 right-6 text-white/70 hover:text-white transition-colors z-[110] cursor-pointer"
@@ -1303,14 +1302,14 @@ const PhotographySection = () => {
             </button>
 
             <button 
-              className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors z-[110] bg-black/20 p-2 rounded-full hidden md:block cursor-pointer border-none"
+              className="absolute left-4 lg:left-8 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors z-[110] bg-black/20 p-2 rounded-full hidden lg:block cursor-pointer border-none"
               onClick={handlePrev}
             >
               <ChevronLeft size={40} strokeWidth={1} />
             </button>
 
             <button 
-              className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors z-[110] bg-black/20 p-2 rounded-full hidden md:block cursor-pointer border-none"
+              className="absolute right-4 lg:right-8 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors z-[110] bg-black/20 p-2 rounded-full hidden lg:block cursor-pointer border-none"
               onClick={handleNext}
             >
               <ChevronRight size={40} strokeWidth={1} />
@@ -1334,7 +1333,7 @@ const PhotographySection = () => {
                 <img 
                   src={visiblePhotos[selectedImageIndex]} 
                   alt="Selected"
-                  className="max-w-full max-h-[75vh] md:max-h-[82vh] object-contain shadow-2xl rounded-sm"
+                  className="max-w-full max-h-[75vh] lg:max-h-[82vh] object-contain shadow-2xl rounded-sm"
                 />
                 
                 <motion.div 

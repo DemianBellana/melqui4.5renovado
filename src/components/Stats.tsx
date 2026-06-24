@@ -6,7 +6,7 @@ const Stats = () => {
   ];
 
   return (
-    <section className="bg-dark px-6 py-14 md:px-16 md:py-20 grid grid-cols-1 md:grid-cols-3 text-center gap-10">
+    <section className="bg-dark px-6 py-14 lg:px-16 lg:py-20 grid grid-cols-1 lg:grid-cols-3 text-center gap-10">
       {stats.map((stat, index) => (
         <div key={index}>
           <div className="font-serif text-[4rem] font-light text-white leading-none">

@@ -34,7 +34,7 @@ const Navbar = () => {
   return (
     <>
       <nav 
-        className={`fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-6 md:px-16 py-6 bg-[rgba(250,248,244,0.92)] backdrop-blur-md border-b border-[rgba(160,140,120,0.12)] transition-all duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-6 lg:px-16 py-6 bg-[rgba(250,248,244,0.92)] backdrop-blur-md border-b border-[rgba(160,140,120,0.12)] transition-all duration-300 ${
           isScrolled ? 'shadow-[0_2px_30px_rgba(20,17,14,0.08)]' : 'shadow-none'
         }`}
       >
@@ -43,7 +43,7 @@ const Navbar = () => {
         </a>
 
         {/* Desktop Links */}
-        <ul className="hidden md:flex gap-10 list-none m-0 p-0">
+        <ul className="hidden lg:flex gap-10 list-none m-0 p-0">
           {navLinks.map((link) => (
             <li key={link.name}>
               <a 
@@ -58,7 +58,7 @@ const Navbar = () => {
 
         {/* Mobile Menu Toggle */}
         <button 
-          className="md:hidden text-[#161616] p-1"
+          className="lg:hidden text-[#161616] p-1"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           aria-label="Toggle menu"
         >
@@ -74,7 +74,7 @@ const Navbar = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-[90] bg-[rgba(250,248,244,0.98)] backdrop-blur-lg flex flex-col items-center justify-center md:hidden"
+            className="fixed inset-0 z-[90] bg-[rgba(250,248,244,0.98)] backdrop-blur-lg flex flex-col items-center justify-center lg:hidden"
           >
             <ul className="flex flex-col items-center gap-8 list-none m-0 p-0">
               {navLinks.map((link) => (

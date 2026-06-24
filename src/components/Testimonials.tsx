@@ -19,7 +19,7 @@ const Testimonials = () => {
   ];
 
   return (
-    <section className="px-6 py-16 md:px-16 md:py-28 bg-warm-white text-center">
+    <section className="px-6 py-16 lg:px-16 lg:py-28 bg-warm-white text-center">
       <span className="text-[0.62rem] font-light tracking-[0.28em] uppercase text-accent mb-6">
         Kind Words
       </span>
@@ -27,7 +27,7 @@ const Testimonials = () => {
         <em className="italic">What couples say</em>
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-[1000px] mx-auto mt-14">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 max-w-[1000px] mx-auto mt-14">
         {reviews.map((review, index) => (
           <div key={index} className="bg-cream p-11 text-left border-l-2 border-accent">
             <p className="font-serif text-[1.05rem] italic font-light leading-[1.75] text-mid mb-6">

@@ -1,5 +1,6 @@
 import React from 'react';
 import horizontalImg from '../assets/Horizontal.jpg';
+import aboutmeImg from '../assets/aboutme.AVIF';
 
 const InstagramIcon = ({ size = 28 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
@@ -17,13 +18,20 @@ const TikTokIcon = ({ size = 28 }: { size?: number }) => (
 
 const Contact = () => {
   return (
-    <section id="contact" className="relative px-6 py-20 md:px-16 md:py-32 overflow-hidden min-h-screen flex items-center justify-center">
+    <section id="contact" className="relative px-6 py-20 lg:px-16 lg:py-32 overflow-hidden min-h-screen flex items-center justify-center">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
+        {/* Mobile Background */}
+        <img 
+          src={aboutmeImg} 
+          alt="Contact Background Mobile" 
+          className="w-full h-full object-cover block lg:hidden"
+        />
+        {/* Desktop Background */}
         <img 
           src={horizontalImg} 
-          alt="Contact Background" 
-          className="w-full h-full object-cover"
+          alt="Contact Background Desktop" 
+          className="w-full h-full object-cover hidden lg:block"
         />
         <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
       </div>

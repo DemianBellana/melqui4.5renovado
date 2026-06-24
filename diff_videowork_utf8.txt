@@ -1,0 +1,429 @@
+diff --git a/src/components/VideoWorkSection.tsx b/src/components/VideoWorkSection.tsx
+index a23b560..4706e7c 100644
+--- a/src/components/VideoWorkSection.tsx
++++ b/src/components/VideoWorkSection.tsx
+@@ -1,4 +1,4 @@
+-import { useRef, useState } from 'react';
++import { useRef, useState, useEffect } from 'react';
+ import { motion, useSpring, useMotionValue, useTransform } from 'framer-motion';
+ import gsap from 'gsap';
+ import { ScrollTrigger } from 'gsap/ScrollTrigger';
+@@ -9,7 +9,6 @@ gsap.registerPlugin(ScrollTrigger);
+ const SOCIAL_LINKS = {
+   instagram: 'https://instagram.com/TU_USUARIO',
+   tiktok:    'https://tiktok.com/@TU_USUARIO',
+-  facebook:  'https://facebook.com/TU_USUARIO',
+ };
+ 
+ const IconInstagram = () => (
+@@ -26,20 +25,13 @@ const IconTikTok = () => (
+   </svg>
+ );
+ 
+-const IconFacebook = () => (
+-  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+-    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+-  </svg>
+-);
+-
+ const socialButtons = [
+   { key: 'instagram', Icon: IconInstagram, label: 'Instagram', color: '#E1306C' },
+   { key: 'tiktok',    Icon: IconTikTok,    label: 'TikTok',    color: '#010101' },
+-  { key: 'facebook',  Icon: IconFacebook,  label: 'Facebook',  color: '#1877F2' },
+ ];
+ 
+ // ─── iPhone Frame ────────────────────────────────────────────────────────────
+-const IPhoneFrame = ({ video, isActive, onClick }) => {
++const IPhoneFrame = ({ video, isActive, onClick, isMobile = false }) => {
+   const x = useMotionValue(0);
+   const y = useMotionValue(0);
+   const mouseXSpring = useSpring(x, { stiffness: 100, damping: 20 });
+@@ -56,8 +48,13 @@ const IPhoneFrame = ({ video, isActive, onClick }) => {
+     const vid = videoRef.current;
+     if (!vid) return;
+     if (vid.paused) {
+-      vid.play();
+-      setPlaying(true);
++      vid.play()
++        .then(() => {
++          setPlaying(true);
++        })
++        .catch((err) => {
++          console.warn("Video play interrupted:", err);
++        });
+     } else {
+       vid.pause();
+       setPlaying(false);
+@@ -80,10 +77,10 @@ const IPhoneFrame = ({ video, isActive, onClick }) => {
+   return (
+     <motion.div
+       ref={frameRef}
+-      onMouseMove={handleMouseMove}
+-      onMouseLeave={handleMouseLeave}
+-      style={{ rotateX, rotateY, perspective: 1000 }}
+-      whileHover={{ scale: 1.04, y: -8 }}
++      onMouseMove={isMobile ? undefined : handleMouseMove}
++      onMouseLeave={isMobile ? undefined : handleMouseLeave}
++      style={isMobile ? {} : { rotateX, rotateY, perspective: 1000 }}
++      whileHover={isMobile ? {} : { scale: 1.04, y: -8 }}
+       transition={{ type: 'spring', stiffness: 220, damping: 18 }}
+       className="iphone-frame cursor-pointer"
+     >
+@@ -285,6 +282,8 @@ const IPhoneFrame = ({ video, isActive, onClick }) => {
+ const VideoWorkSection = () => {
+   const sectionRef = useRef(null);
+   const [activeIndex, setActiveIndex] = useState(null);
++  const [isMobile, setIsMobile] = useState(false);
++  const [currentIndex, setCurrentIndex] = useState(0);
+ 
+   const categories = [
+     { name: 'Social Media', desc: 'Contenido optimizado para redes sociales.',  video: '/assets/video/work/social_media_1.mp4' },
+@@ -293,7 +292,23 @@ const VideoWorkSection = () => {
+     { name: 'Events',       desc: 'Cobertura y edición de eventos en vivo.',     video: '/assets/video/work/event_1.mov' },
+   ];
+ 
++  useEffect(() => {
++    const checkMobile = () => setIsMobile(window.innerWidth < 768);
++    checkMobile();
++    window.addEventListener('resize', checkMobile);
++    return () => window.removeEventListener('resize', checkMobile);
++  }, []);
++
++  const handleNext = () => {
++    setCurrentIndex((prev) => (prev + 1) % categories.length);
++  };
++
++  const handlePrev = () => {
++    setCurrentIndex((prev) => (prev - 1 + categories.length) % categories.length);
++  };
++
+   useGSAP(() => {
++    if (isMobile) return;
+     const frames = gsap.utils.toArray('.iphone-frame');
+     frames.forEach((frame, i) => {
+       gsap.from(frame, {
+@@ -309,7 +324,7 @@ const VideoWorkSection = () => {
+         ease: 'power3.out',
+       });
+     });
+-  }, { scope: sectionRef });
++  }, { scope: sectionRef, dependencies: [isMobile] });
+ 
+   return (
+     <section
+@@ -365,105 +380,227 @@ const VideoWorkSection = () => {
+         </h2>
+       </div>
+ 
+-      {/* iPhone grid */}
+-      <div
+-        style={{
+-          display: 'flex',
+-          flexWrap: 'wrap',
+-          justifyContent: 'center',
+-          gap: '32px',
+-          maxWidth: '1100px',
+-          margin: '0 auto',
+-          alignItems: 'flex-end',
+-        }}
+-      >
+-        {categories.map((cat, i) => (
++      {isMobile ? (
++        /* Mobile Carousel Slider (Native Scroll Snap) */
++        <div className="w-full max-w-[280px] mx-auto">
+           <div
+-            key={i}
+-            style={{
+-              display: 'flex',
+-              flexDirection: 'column',
+-              alignItems: 'center',
+-              gap: '20px',
+-              /* Stagger vertical offset for visual rhythm */
+-              marginTop: i % 2 === 1 ? '40px' : '0',
++            className="flex overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar w-full"
++            onScroll={(e) => {
++              const target = e.currentTarget;
++              const scrollPosition = target.scrollLeft;
++              const width = target.clientWidth;
++              if (width > 0) {
++                const newIndex = Math.round(scrollPosition / width);
++                if (newIndex !== currentIndex) {
++                  setCurrentIndex(newIndex);
++                }
++              }
+             }}
+           >
+-            <IPhoneFrame
+-              video={cat.video}
+-              isActive={activeIndex === i}
+-              onClick={() => setActiveIndex(activeIndex === i ? null : i)}
+-            />
+-
+-            {/* Label below phone */}
+-            <motion.div
+-              initial={{ opacity: 0, y: 10 }}
+-              whileInView={{ opacity: 1, y: 0 }}
+-              transition={{ delay: i * 0.1 + 0.3 }}
+-              style={{ textAlign: 'center' }}
+-            >
+-              <p
+-                style={{
+-                  fontFamily: 'Georgia, serif',
+-                  fontSize: '1rem',
+-                  fontWeight: 400,
+-                  color: '#1a1714',
+-                  margin: '0 0 4px',
+-                }}
+-              >
+-                {cat.name}
+-              </p>
+-              <p
+-                style={{
+-                  fontSize: '0.75rem',
+-                  color: '#888',
+-                  margin: '0 0 12px',
+-                  maxWidth: '180px',
+-                  lineHeight: 1.5,
+-                }}
++            {categories.map((cat, i) => (
++              <div
++                key={i}
++                style={{ flexShrink: 0 }}
++                className="min-w-full snap-center flex flex-col items-center gap-6 px-2"
+               >
+-                {cat.desc}
+-              </p>
++                <IPhoneFrame
++                  video={cat.video}
++                  isActive={activeIndex === i}
++                  onClick={() => setActiveIndex(activeIndex === i ? null : i)}
++                  isMobile={isMobile}
++                />
+ 
+-              {/* Social icons */}
+-              <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+-                {socialButtons.map(({ key, Icon, label, color }) => (
+-                  <a
+-                    key={key}
+-                    href={SOCIAL_LINKS[key]}
+-                    target="_blank"
+-                    rel="noopener noreferrer"
+-                    aria-label={label}
++                {/* Label below phone */}
++                <div className="text-center">
++                  <p
+                     style={{
+-                      width: '32px',
+-                      height: '32px',
+-                      borderRadius: '50%',
+-                      display: 'flex',
+-                      alignItems: 'center',
+-                      justifyContent: 'center',
+-                      background: 'rgba(0,0,0,0.05)',
+-                      border: `1px solid ${color}33`,
+-                      color: color,
+-                      transition: 'transform 0.2s, border-color 0.2s',
+-                      textDecoration: 'none',
++                      fontFamily: 'Georgia, serif',
++                      fontSize: '1.05rem',
++                      fontWeight: 400,
++                      color: '#1a1714',
++                      margin: '0 0 6px',
+                     }}
+-                    onMouseEnter={e => {
+-                      e.currentTarget.style.transform = 'scale(1.15)';
+-                      e.currentTarget.style.borderColor = color + '88';
+-                    }}
+-                    onMouseLeave={e => {
+-                      e.currentTarget.style.transform = 'scale(1)';
+-                      e.currentTarget.style.borderColor = color + '33';
++                  >
++                    {cat.name}
++                  </p>
++                  <p
++                    style={{
++                      fontSize: '0.8rem',
++                      color: '#888',
++                      margin: '0 0 16px',
++                      maxWidth: '220px',
++                      lineHeight: 1.5,
+                     }}
+                   >
+-                    <Icon />
+-                  </a>
+-                ))}
++                    {cat.desc}
++                  </p>
++
++                  {/* Social icons */}
++                  <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
++                    {socialButtons.map(({ key, Icon, label, color }) => (
++                      <a
++                        key={key}
++                        href={SOCIAL_LINKS[key as keyof typeof SOCIAL_LINKS]}
++                        target="_blank"
++                        rel="noopener noreferrer"
++                        aria-label={label}
++                        style={{
++                          width: '32px',
++                          height: '32px',
++                          borderRadius: '50%',
++                          display: 'flex',
++                          alignItems: 'center',
++                          justifyContent: 'center',
++                          background: 'rgba(0,0,0,0.05)',
++                          border: `1px solid ${color}33`,
++                          color: color,
++                          transition: 'transform 0.2s, border-color 0.2s',
++                          textDecoration: 'none',
++                        }}
++                        onMouseEnter={e => {
++                          e.currentTarget.style.transform = 'scale(1.15)';
++                          e.currentTarget.style.borderColor = color + '88';
++                        }}
++                        onMouseLeave={e => {
++                          e.currentTarget.style.transform = 'scale(1)';
++                          e.currentTarget.style.borderColor = color + '33';
++                        }}
++                      >
++                        <Icon />
++                      </a>
++                    ))}
++                  </div>
++                </div>
+               </div>
+-            </motion.div>
++            ))}
+           </div>
+-        ))}
+-      </div>
++
++          {/* Dots Indicator */}
++          <div className="flex justify-center gap-1.5 mt-8">
++            {categories.map((_, idx) => (
++              <button
++                key={idx}
++                onClick={(e) => {
++                  const container = e.currentTarget.parentElement?.previousSibling as HTMLDivElement;
++                  if (container) {
++                    container.scrollTo({
++                      left: idx * container.clientWidth,
++                      behavior: 'smooth'
++                    });
++                  }
++                  setCurrentIndex(idx);
++                }}
++                className={`h-1 rounded-full transition-all duration-300 ${
++                  idx === currentIndex ? 'w-5 bg-[#e02020]' : 'w-1.5 bg-dark/20'
++                }`}
++                style={{ border: 'none', padding: 0, cursor: 'pointer' }}
++                aria-label={`Go to slide ${idx + 1}`}
++              />
++            ))}
++          </div>
++        </div>
++      ) : (
++        /* Desktop/Tablet Grid Layout */
++        <div
++          style={{
++            display: 'flex',
++            flexWrap: 'wrap',
++            justifyContent: 'center',
++            gap: '32px',
++            maxWidth: '1100px',
++            margin: '0 auto',
++            alignItems: 'flex-end',
++          }}
++        >
++          {categories.map((cat, i) => (
++            <div
++              key={i}
++              style={{
++                display: 'flex',
++                flexDirection: 'column',
++                alignItems: 'center',
++                gap: '20px',
++                /* Stagger vertical offset for visual rhythm */
++                marginTop: i % 2 === 1 ? '40px' : '0',
++              }}
++            >
++              <IPhoneFrame
++                video={cat.video}
++                isActive={activeIndex === i}
++                onClick={() => setActiveIndex(activeIndex === i ? null : i)}
++                isMobile={isMobile}
++              />
++
++              {/* Label below phone */}
++              <motion.div
++                initial={{ opacity: 0, y: 10 }}
++                whileInView={{ opacity: 1, y: 0 }}
++                transition={{ delay: i * 0.1 + 0.3 }}
++                style={{ textAlign: 'center' }}
++              >
++                <p
++                  style={{
++                    fontFamily: 'Georgia, serif',
++                    fontSize: '1rem',
++                    fontWeight: 400,
++                    color: '#1a1714',
++                    margin: '0 0 4px',
++                  }}
++                >
++                  {cat.name}
++                </p>
++                <p
++                  style={{
++                    fontSize: '0.75rem',
++                    color: '#888',
++                    margin: '0 0 12px',
++                    maxWidth: '180px',
++                    lineHeight: 1.5,
++                  }}
++                >
++                  {cat.desc}
++                </p>
++
++                {/* Social icons */}
++                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
++                  {socialButtons.map(({ key, Icon, label, color }) => (
++                    <a
++                      key={key}
++                      href={SOCIAL_LINKS[key as keyof typeof SOCIAL_LINKS]}
++                      target="_blank"
++                      rel="noopener noreferrer"
++                      aria-label={label}
++                      style={{
++                        width: '32px',
++                        height: '32px',
++                        borderRadius: '50%',
++                        display: 'flex',
++                        alignItems: 'center',
++                        justifyContent: 'center',
++                        background: 'rgba(0,0,0,0.05)',
++                        border: `1px solid ${color}33`,
++                        color: color,
++                        transition: 'transform 0.2s, border-color 0.2s',
++                        textDecoration: 'none',
++                      }}
++                      onMouseEnter={e => {
++                        e.currentTarget.style.transform = 'scale(1.15)';
++                        e.currentTarget.style.borderColor = color + '88';
++                      }}
++                      onMouseLeave={e => {
++                        e.currentTarget.style.transform = 'scale(1)';
++                        e.currentTarget.style.borderColor = color + '33';
++                      }}
++                    >
++                      <Icon />
++                    </a>
++                  ))}
++                </div>
++              </motion.div>
++            </div>
++          ))}
++        </div>
++      )}
+     </section>
+   );
+ };

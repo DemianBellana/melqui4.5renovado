@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
-import { motion, useSpring, useMotionValue, useTransform } from 'framer-motion';
+import { motion, useSpring, useMotionValue, useTransform, AnimatePresence } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
@@ -33,12 +33,13 @@ const socialButtons = [
 // ─── iPhone Frame ────────────────────────────────────────────────────────────
 interface IPhoneFrameProps {
   video: string;
+  videos?: string[];
   isActive: boolean;
   onClick: () => void;
   isMobile?: boolean;
 }
 
-const IPhoneFrame = ({ video, isActive, onClick, isMobile = false }: IPhoneFrameProps) => {
+const IPhoneFrame = ({ video, videos = [video], isActive, onClick, isMobile = false }: IPhoneFrameProps) => {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const mouseXSpring = useSpring(x, { stiffness: 100, damping: 20 });
@@ -49,6 +50,10 @@ const IPhoneFrame = ({ video, isActive, onClick, isMobile = false }: IPhoneFrame
   const frameRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const [hovered, setHovered] = useState(false);
+
+  const currentVideo = videos[currentVideoIndex] || video;
 
   useEffect(() => {
     if (!isActive && videoRef.current) {
@@ -83,16 +88,24 @@ const IPhoneFrame = ({ video, isActive, onClick, isMobile = false }: IPhoneFrame
     y.set((e.clientY - rect.top) / rect.height - 0.5);
   };
 
+  const handleMouseEnter = () => {
+    if (!isMobile) setHovered(true);
+  };
+
   const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
+    if (!isMobile) {
+      setHovered(false);
+      x.set(0);
+      y.set(0);
+    }
   };
 
   return (
     <motion.div
       ref={frameRef}
       onMouseMove={isMobile ? undefined : handleMouseMove}
-      onMouseLeave={isMobile ? undefined : handleMouseLeave}
+      onMouseEnter={isMobile ? undefined : handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       style={isMobile ? {} : { rotateX, rotateY, perspective: 1000 }}
       whileHover={isMobile ? {} : { scale: 1.04, y: -8 }}
       transition={{ type: 'spring', stiffness: 220, damping: 18 }}
@@ -158,22 +171,40 @@ const IPhoneFrame = ({ video, isActive, onClick, isMobile = false }: IPhoneFrame
             onClick={handleVideoClick}
             style={{ flex: 1, overflow: 'hidden', position: 'relative', cursor: 'pointer' }}
           >
-            <video
-              ref={videoRef}
-              loop
-              muted={false}
-              playsInline
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'contain',
-                display: 'block',
-                backgroundColor: '#000'
-              }}
-            >
-              <source src={video} type="video/mp4" />
-              <source src={video} type="video/quicktime" />
-            </video>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentVideoIndex}
+                initial={{ scale: 0.85, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.85, opacity: 0 }}
+                transition={{ duration: 0.55, ease: "easeInOut" }}
+                style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#000' }}
+              >
+                <video
+                  ref={videoRef}
+                  onLoadedMetadata={(e) => {
+                    if (isActive) {
+                      e.currentTarget.play()
+                        .then(() => setPlaying(true))
+                        .catch((err: any) => console.warn("Video play interrupted:", err));
+                    }
+                  }}
+                  loop
+                  muted={false}
+                  playsInline
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'contain',
+                    display: 'block',
+                    backgroundColor: '#000'
+                  }}
+                >
+                  <source src={currentVideo} type="video/mp4" />
+                  <source src={currentVideo} type="video/quicktime" />
+                </video>
+              </motion.div>
+            </AnimatePresence>
 
             {/* Play/Pause overlay */}
             <motion.div
@@ -188,6 +219,7 @@ const IPhoneFrame = ({ video, isActive, onClick, isMobile = false }: IPhoneFrame
                 justifyContent: 'center',
                 background: playing ? 'transparent' : 'rgba(0,0,0,0.25)',
                 pointerEvents: 'none',
+                zIndex: 10,
               }}
             >
               <div
@@ -216,8 +248,124 @@ const IPhoneFrame = ({ video, isActive, onClick, isMobile = false }: IPhoneFrame
                 inset: 0,
                 background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 50%)',
                 pointerEvents: 'none',
+                zIndex: 15,
               }}
             />
+
+            {/* Arrow controllers for desktop (on hover) */}
+            {!isMobile && videos && videos.length > 1 && (
+              <>
+                {/* Left Arrow */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setPlaying(false);
+                    setCurrentVideoIndex((prev) => (prev - 1 + videos.length) % videos.length);
+                  }}
+                  style={{
+                    position: 'absolute',
+                    left: '8px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    width: '30px',
+                    height: '30px',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: 'rgba(0,0,0,0.4)',
+                    color: '#fff',
+                    border: 'none',
+                    opacity: hovered ? 1 : 0,
+                    transition: 'opacity 0.2s ease, background-color 0.2s',
+                    cursor: 'pointer',
+                    zIndex: 20,
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.6)'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.4)'}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="15 18 9 12 15 6" />
+                  </svg>
+                </button>
+
+                {/* Right Arrow */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setPlaying(false);
+                    setCurrentVideoIndex((prev) => (prev + 1) % videos.length);
+                  }}
+                  style={{
+                    position: 'absolute',
+                    right: '8px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    width: '30px',
+                    height: '30px',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: 'rgba(0,0,0,0.4)',
+                    color: '#fff',
+                    border: 'none',
+                    opacity: hovered ? 1 : 0,
+                    transition: 'opacity 0.2s ease, background-color 0.2s',
+                    cursor: 'pointer',
+                    zIndex: 20,
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.6)'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.4)'}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </button>
+              </>
+            )}
+
+            {/* Dots indicators for desktop */}
+            {!isMobile && videos && videos.length > 1 && (
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: '12px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  display: 'flex',
+                  gap: '6px',
+                  zIndex: 20,
+                  background: 'rgba(0, 0, 0, 0.4)',
+                  padding: '4px 8px',
+                  borderRadius: '12px',
+                  backdropFilter: 'blur(4px)',
+                }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {videos.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setPlaying(false);
+                      setCurrentVideoIndex(idx);
+                    }}
+                    style={{
+                      width: '6px',
+                      height: '6px',
+                      borderRadius: '50%',
+                      border: 'none',
+                      padding: 0,
+                      background: idx === currentVideoIndex ? '#e02020' : 'rgba(255, 255, 255, 0.4)',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                    }}
+                    aria-label={`Video ${idx + 1}`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Home indicator bar */}
@@ -304,18 +452,63 @@ const VideoWorkSection = () => {
 
 
   const categories = [
-    { name: 'Social Media', desc: 'Contenido optimizado para redes sociales.',  video: '/assets/video/work/social_media_1.mp4' },
-    { name: 'Talking Head', desc: 'Entrevistas y contenido directo a cámara.',   video: '/assets/video/work/talking_head_1.mp4' },
-    { name: 'Drone',        desc: 'Tomas aéreas cinematográficas.',              video: '/assets/video/work/drone_1.mp4' },
-    { name: 'Events',       desc: 'Cobertura y edición de eventos en vivo.',     video: '/assets/video/work/event_1.mov' },
+    { 
+      name: 'Social Media', 
+      desc: 'Contenido optimizado para redes sociales.',  
+      video: '/assets/video/work/social_media_1.mp4',
+      videos: ['/assets/video/work/social_media_1.mp4', '/assets/video/work/social_media_2.mov'] 
+    },
+    { 
+      name: 'Talking Head', 
+      desc: 'Entrevistas y contenido directo a cámara.',   
+      video: '/assets/video/work/talking_head_1.mp4',
+      videos: ['/assets/video/work/talking_head_1.mp4', '/assets/video/work/talking_head_2.mov']
+    },
+    { 
+      name: 'Drone',        
+      desc: 'Tomas aéreas cinematográficas.',              
+      video: '/assets/video/work/drone_1.mp4',
+      videos: ['/assets/video/work/drone_1.mp4', '/assets/video/work/drone_2.mp4']
+    },
+    { 
+      name: 'Events',       
+      desc: 'Cobertura y edición de eventos en vivo.',     
+      video: '/assets/video/work/event_1.mov',
+      videos: ['/assets/video/work/event_1.mov', '/assets/video/work/event_2.mov']
+    },
   ];
 
+  const [activeMobileCategory, setActiveMobileCategory] = useState<string>('Todos');
+  const [hoveredButtonIndex, setHoveredButtonIndex] = useState<number | null>(null);
+
+  const mobileSlides = categories.flatMap((cat) =>
+    (cat.videos || [cat.video]).map((vid, idx) => ({
+      category: cat.name,
+      name: cat.name,
+      desc: cat.desc,
+      video: vid,
+    }))
+  );
+
+  const filteredMobileSlides = activeMobileCategory === 'Todos'
+    ? mobileSlides
+    : mobileSlides.filter(slide => slide.category === activeMobileCategory);
+
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    const checkMobile = () => setIsMobile(window.innerWidth < 1025);
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  useEffect(() => {
+    if (!isMobile) return;
+    if (containerRef.current) {
+      containerRef.current.scrollTo({ left: 0, behavior: 'instant' as any });
+    }
+    setCurrentSlide(0);
+    setActiveIndex(null);
+  }, [activeMobileCategory, isMobile]);
 
   // Autoplay carousel every 10 seconds on mobile, scrolling programmatically
   useEffect(() => {
@@ -324,7 +517,7 @@ const VideoWorkSection = () => {
     let interval: any = null;
     if (activeIndex === null && !isDragging) {
       interval = setInterval(() => {
-        const nextSlide = (currentSlide + 1) % categories.length;
+        const nextSlide = (currentSlide + 1) % filteredMobileSlides.length;
         if (containerRef.current) {
           const width = containerRef.current.offsetWidth;
           containerRef.current.scrollTo({ left: nextSlide * width, behavior: 'smooth' });
@@ -336,7 +529,7 @@ const VideoWorkSection = () => {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isMobile, activeIndex, currentSlide, isDragging, categories.length]);
+  }, [isMobile, activeIndex, currentSlide, isDragging, filteredMobileSlides.length]);
 
   useGSAP(() => {
     if (!isMobile) {
@@ -414,6 +607,60 @@ const VideoWorkSection = () => {
 
       {isMobile ? (
         <>
+          {/* Category Selector Tabs for Mobile */}
+          <div 
+            style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(6, 1fr)', 
+              gap: '8px', 
+              padding: '4px 16px 20px', 
+              maxWidth: '340px',
+              margin: '0 auto',
+            }}
+          >
+            {['Todos', 'Social Media', 'Talking Head', 'Drone', 'Events'].map((catName, idx) => {
+              const isSelected = activeMobileCategory === catName;
+              const isHovered = hoveredButtonIndex === idx;
+
+              // Grid positioning for 3 on top, 2 below centered:
+              // Index 0, 1, 2 take columns 1-2, 3-4, 5-6 (span 2 each)
+              // Index 3 takes columns 2-3 (starts at col 2, span 2)
+              // Index 4 takes columns 4-5 (starts at col 4, span 2)
+              const gridColumnStyle = idx < 3 
+                ? 'span 2' 
+                : idx === 3 
+                  ? '2 / span 2' 
+                  : '4 / span 2';
+
+              return (
+                <button
+                  key={catName}
+                  onClick={() => setActiveMobileCategory(catName)}
+                  onMouseEnter={() => setHoveredButtonIndex(idx)}
+                  onMouseLeave={() => setHoveredButtonIndex(null)}
+                  style={{
+                    gridColumn: gridColumnStyle,
+                    padding: '8px 4px',
+                    borderRadius: '20px',
+                    fontSize: '0.72rem',
+                    fontWeight: 500,
+                    border: isSelected ? '1px solid #ff4d6d' : (isHovered ? '1px solid #ff4d6d' : '1px solid rgba(0,0,0,0.08)'),
+                    background: isSelected ? '#ff4d6d' : (isHovered ? '#ffe3e8' : 'rgba(255,255,255,0.7)'),
+                    color: isSelected ? '#fff' : (isHovered ? '#ff4d6d' : '#555'),
+                    cursor: 'pointer',
+                    whiteSpace: 'nowrap',
+                    textAlign: 'center',
+                    transition: 'all 0.25s ease',
+                    boxShadow: isSelected ? '0 4px 10px rgba(255,77,109,0.15)' : 'none',
+                    outline: 'none',
+                  }}
+                >
+                  {catName}
+                </button>
+              );
+            })}
+          </div>
+
           <div 
             ref={containerRef} 
             className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none w-full max-w-[300px] mx-auto"
@@ -423,7 +670,6 @@ const VideoWorkSection = () => {
             }}
             onTouchStart={() => {
               setIsDragging(true);
-              setActiveIndex(null);
             }}
             onTouchEnd={() => {
               setIsDragging(false);
@@ -439,34 +685,37 @@ const VideoWorkSection = () => {
                 const slide = Math.round(currentScroll / width);
                 if (slide !== currentSlide) {
                   setCurrentSlide(slide);
+                  setActiveIndex(null);
                 }
               }
             }}
           >
-            {categories.map((cat, i) => (
+            {filteredMobileSlides.map((slide, i) => (
               <div
-                key={i}
+                key={slide.video}
                 className="min-w-full snap-center flex flex-col items-center gap-5 px-8 shrink-0"
               >
+                <h3
+                  style={{
+                    fontFamily: 'Georgia, serif',
+                    fontSize: '1.2rem',
+                    fontWeight: 400,
+                    color: '#1a1714',
+                    margin: '0 0 4px',
+                    textAlign: 'center',
+                  }}
+                >
+                  {slide.name}
+                </h3>
+
                 <IPhoneFrame
-                  video={cat.video}
+                  video={slide.video}
                   isActive={activeIndex === i}
                   onClick={() => setActiveIndex(activeIndex === i ? null : i)}
                   isMobile={isMobile}
                 />
 
                 <div style={{ textAlign: 'center' }}>
-                  <p
-                    style={{
-                      fontFamily: 'Georgia, serif',
-                      fontSize: '1rem',
-                      fontWeight: 400,
-                      color: '#1a1714',
-                      margin: '0 0 4px',
-                    }}
-                  >
-                    {cat.name}
-                  </p>
                   <p
                     style={{
                       fontSize: '0.75rem',
@@ -476,7 +725,7 @@ const VideoWorkSection = () => {
                       lineHeight: 1.5,
                     }}
                   >
-                    {cat.desc}
+                    {slide.desc}
                   </p>
 
                   {/* Social icons */}
@@ -513,7 +762,7 @@ const VideoWorkSection = () => {
 
           {/* Dots Indicator */}
           <div className="flex justify-center gap-1.5 mt-6">
-            {categories.map((_, idx) => (
+            {filteredMobileSlides.map((_, idx) => (
               <button
                 key={idx}
                 onClick={() => {
@@ -542,7 +791,7 @@ const VideoWorkSection = () => {
             gap: '32px',
             maxWidth: '1100px',
             margin: '0 auto',
-            alignItems: 'flex-end',
+            alignItems: 'flex-start',
           }}
         >
           {categories.map((cat, i) => (
@@ -553,12 +802,32 @@ const VideoWorkSection = () => {
                 flexDirection: 'column',
                 alignItems: 'center',
                 gap: '20px',
-                /* Stagger vertical offset for visual rhythm */
-                marginTop: i % 2 === 1 ? '40px' : '0',
               }}
             >
+              {/* Category Name Title above phone */}
+              <motion.h3
+                initial={{ opacity: 0, y: -10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 + 0.2 }}
+                style={{
+                  fontFamily: 'Georgia, serif',
+                  fontSize: '1.2rem',
+                  fontWeight: 400,
+                  color: '#1a1714',
+                  margin: '0 0 8px',
+                  textAlign: 'center',
+                  minHeight: '36px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                {cat.name}
+              </motion.h3>
+
               <IPhoneFrame
                 video={cat.video}
+                videos={cat.videos}
                 isActive={activeIndex === i}
                 onClick={() => setActiveIndex(activeIndex === i ? null : i)}
                 isMobile={isMobile}
@@ -571,17 +840,6 @@ const VideoWorkSection = () => {
                 transition={{ delay: i * 0.1 + 0.3 }}
                 style={{ textAlign: 'center' }}
               >
-                <p
-                  style={{
-                    fontFamily: 'Georgia, serif',
-                    fontSize: '1rem',
-                    fontWeight: 400,
-                    color: '#1a1714',
-                    margin: '0 0 4px',
-                  }}
-                >
-                  {cat.name}
-                </p>
                 <p
                   style={{
                     fontSize: '0.75rem',
