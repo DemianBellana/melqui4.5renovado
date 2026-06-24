@@ -482,7 +482,7 @@ const VideoWorkSection = () => {
   const [hoveredButtonIndex, setHoveredButtonIndex] = useState<number | null>(null);
 
   const mobileSlides = categories.flatMap((cat) =>
-    (cat.videos || [cat.video]).map((vid, idx) => ({
+    (cat.videos || [cat.video]).map((vid) => ({
       category: cat.name,
       name: cat.name,
       desc: cat.desc,

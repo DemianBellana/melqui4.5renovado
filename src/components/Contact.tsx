@@ -1,6 +1,6 @@
 import React from 'react';
 import horizontalImg from '../assets/Horizontal.jpg';
-import aboutmeImg from '../assets/aboutme.AVIF';
+import aboutmeImg from '../assets/aboutme.avif';
 
 const InstagramIcon = ({ size = 28 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
