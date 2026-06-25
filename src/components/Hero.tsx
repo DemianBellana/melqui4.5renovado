@@ -86,8 +86,8 @@ const Hero = () => {
             }}
             className="hero-cta group relative overflow-hidden flex items-center gap-3
                        bg-[#ff4d6d] border border-[#ff4d6d] rounded-full
-                       px-9 py-4
-                       font-sans text-[11px] tracking-[0.22em] uppercase text-white
+                       px-8 py-3.5
+                       font-sans text-[10px] tracking-[0.22em] uppercase text-white
                        transition-all duration-400 ease-out
                        hover:bg-[#e03d5a] hover:border-[#e03d5a]
                        cursor-pointer shadow-lg"
