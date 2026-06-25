@@ -48,79 +48,14 @@ const Contact = () => {
             Cuéntame tu idea y buscaremos la mejor forma de llevarla a cabo. Respondo en menos de 24 horas.
           </p>
 
-          <div className="flex flex-col gap-8 justify-center items-center mt-6 mb-12">
+          <div className="flex flex-col gap-8 justify-center items-center mt-6">
             <div className="text-[0.9rem] font-light text-white/70 tracking-[0.05em] text-center">
               <strong className="text-white font-normal block mb-1 text-[0.68rem] tracking-[0.18em] uppercase opacity-50">
                 Email
               </strong>
               <a href="mailto:melisaquiroga@gmail.com" className="hover:text-[#D8B7B0] transition-colors text-xl">melisaquiroga@gmail.com</a>
             </div>
-            <div className="text-[0.9rem] font-light text-white/70 tracking-[0.05em] text-center">
-              <strong className="text-white font-normal block mb-1 text-[0.68rem] tracking-[0.18em] uppercase opacity-50">
-                WhatsApp
-              </strong>
-              <a href="https://wa.me/5491166898081" target="_blank" rel="noopener noreferrer" className="hover:text-[#D8B7B0] transition-colors text-xl">+54 9 11 6689-8081</a>
-            </div>
           </div>
-
-          {/* Redes sociales - Desktop Version */}
-          <ul className="social-list-desktop hidden lg:flex justify-center gap-6">
-            {[
-              {
-                href: 'https://www.instagram.com/melquigrafias/',
-                label: 'Instagram',
-                icon: <InstagramIcon size={28} />,
-                i: '#E1306C',
-                j: '#bc1888'
-              },
-              {
-                href: 'https://www.tiktok.com/@meelqui',
-                label: 'TikTok',
-                icon: <TikTokIcon size={28} />,
-                i: '#000000',
-                j: '#444444'
-              },
-            ].map(({ href, label, icon, i, j }) => (
-              <li 
-                key={label} 
-                style={{ '--i': i, '--j': j } as React.CSSProperties}
-                onClick={() => window.open(href, '_blank', 'noopener,noreferrer')}
-              >
-                <span className="icon">{icon}</span>
-                <span className="title">{label}</span>
-              </li>
-            ))}
-          </ul>
-
-          {/* Redes sociales - Mobile Version (Circular & Filled) */}
-          <ul className="social-list-mobile flex lg:hidden justify-center gap-4">
-            {[
-              {
-                href: 'https://www.instagram.com/melquigrafias/',
-                label: 'Instagram',
-                icon: <InstagramIcon size={28} />,
-                color: '#e4405f'
-              },
-              {
-                href: 'https://www.tiktok.com/@meelqui',
-                label: 'TikTok',
-                icon: <TikTokIcon size={28} />,
-                color: '#000000'
-              },
-            ].map(({ href, label, icon, color }) => (
-              <li key={label}>
-                <a 
-                  href={href} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="btn-circle"
-                  style={{ '--i': color } as React.CSSProperties}
-                >
-                  <span className="icon">{icon}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
         </div>
       </div>
     </section>
