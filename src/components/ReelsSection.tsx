@@ -99,7 +99,7 @@ const ReelsSection = () => {
           ref={textRef}
           className="flex flex-col justify-center items-start md:items-center lg:items-start text-left md:text-center lg:text-left px-6 lg:px-20 z-10 order-2 lg:order-1"
         >
-          <span className="text-[0.62rem] md:text-[0.82rem] lg:text-[clamp(0.8rem,_calc(0.04_*_30cqw),_0.95rem)] font-bold tracking-[0.28em] uppercase text-[#161616] opacity-70 mb-6">
+          <span className="text-[0.62rem] md:text-[0.82rem] lg:text-[clamp(0.8rem,_calc(0.04_*_30cqw),_0.95rem)] font-bold tracking-[0.28em] uppercase text-[#707f6a] mb-6">
             01. Edición de Reels
           </span>
           <h2 className="font-serif text-[clamp(2rem,3.5vw,3.2rem)] md:text-[clamp(2.5rem,4.5vw,3.8rem)] lg:text-[clamp(2.6rem,_calc(0.165_*_30cqw),_4.2rem)] font-light leading-[1.18] text-[#161616] mb-6">
