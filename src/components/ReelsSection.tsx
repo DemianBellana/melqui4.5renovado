@@ -6,6 +6,28 @@ import { useGSAP } from '@gsap/react';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const VideoCameraIcon = ({ size }: { size: number }) => (
+  <svg 
+    width={size} 
+    height={size} 
+    viewBox="0 0 24 24" 
+    fill="currentColor"
+  >
+    <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z" />
+  </svg>
+);
+
+const backgroundCameras = [
+  { top: '8%', left: '6%', size: 48, rotate: -15, opacity: 0.08 },
+  { top: '22%', left: '44%', size: 68, rotate: 12, opacity: 0.05 },
+  { top: '78%', left: '12%', size: 58, rotate: -8, opacity: 0.07 },
+  { top: '88%', left: '46%', size: 42, rotate: 25, opacity: 0.06 },
+  { top: '12%', left: '82%', size: 76, rotate: 18, opacity: 0.05 },
+  { top: '48%', left: '74%', size: 54, rotate: -22, opacity: 0.08 },
+  { top: '84%', left: '86%', size: 64, rotate: 10, opacity: 0.06 },
+  { top: '56%', left: '4%', size: 46, rotate: -5, opacity: 0.07 },
+];
+
 const ReelsSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
@@ -91,8 +113,26 @@ const ReelsSection = () => {
     <section
       id="reels"
       ref={containerRef}
-      className="min-h-[90vh] bg-[#D8B7B0] overflow-hidden flex items-center justify-center py-20 @container"
+      className="min-h-[90vh] relative bg-[#D8B7B0] overflow-hidden flex items-center justify-center py-20 @container"
     >
+      {/* Background Decorative Cameras (Desktop only) */}
+      <div className="hidden lg:block absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        {backgroundCameras.map((cam, idx) => (
+          <div
+            key={idx}
+            className="absolute text-white transition-transform duration-300"
+            style={{
+              top: cam.top,
+              left: cam.left,
+              transform: `rotate(${cam.rotate}deg)`,
+              opacity: cam.opacity,
+            }}
+          >
+            <VideoCameraIcon size={cam.size} />
+          </div>
+        ))}
+      </div>
+
       <div className="max-w-[1200px] w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-0 items-center">
         {/* Columna Izquierda: Texto */}
         <div
