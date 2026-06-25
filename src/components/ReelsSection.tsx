@@ -111,14 +111,7 @@ const ReelsSection = () => {
           <p className="text-[0.88rem] md:text-[1.1rem] lg:text-[clamp(1.1rem,_calc(0.058_*_30cqw),_1.3rem)] font-light leading-[1.85] text-[#161616] opacity-80 max-w-[42ch] mb-9 mx-0 md:mx-auto lg:mx-0">
             Esta pieza recopila mis mejores trabajos, demostrando mi capacidad para captar la atención y contar historias potentes en formatos breves.
           </p>
-          <div className="mt-6 flex items-center gap-4 justify-start md:justify-center lg:justify-start">
-            <div className="w-10 h-10 rounded-full border border-[#161616]/20 flex items-center justify-center">
-              <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-            </div>
-            <span className="text-[0.7rem] md:text-[0.9rem] lg:text-[clamp(0.8rem,_calc(0.045_*_30cqw),_1rem)] uppercase tracking-widest text-[#161616] opacity-70 font-medium">
-              Formato Vertical 9:16
-            </span>
-          </div>
+
         </div>
 
         {/* Columna Derecha: iPhone */}
