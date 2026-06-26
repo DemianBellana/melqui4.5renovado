@@ -62,7 +62,6 @@ export default function Footer() {
           <div className="ftr-socials">
             <a href="https://www.instagram.com/melquigrafias/" target="_blank" rel="noopener noreferrer" className="ftr-social-link">Instagram</a>
             <a href="https://www.tiktok.com/@meelqui" target="_blank" rel="noopener noreferrer" className="ftr-social-link">TikTok</a>
-            <a href="https://vimeo.com" target="_blank" rel="noopener noreferrer" className="ftr-social-link">Vimeo</a>
           </div>
         </div>
 
@@ -91,11 +90,6 @@ export default function Footer() {
         <div>
           <p className="ftr-col-label">Contacto</p>
           <ul className="ftr-nav-list">
-            <li>
-              <a href="mailto:hola@melisaquiroga.com">
-                hola@melisaquiroga.com
-              </a>
-            </li>
             <li>
               <a href="https://wa.me/5491166898081" target="_blank" rel="noopener noreferrer">
                 WhatsApp
