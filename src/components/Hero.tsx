@@ -84,7 +84,7 @@ const Hero = () => {
             onMouseMove={handleMagnet}
             onMouseLeave={handleMagnetLeave}
             onClick={() => {
-              document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+              window.open('https://wa.me/5491166898081', '_blank', 'noopener,noreferrer');
             }}
             className="hero-cta opacity-0 group relative overflow-hidden flex items-center gap-3
                        bg-[#ff4d6d] border border-[#ff4d6d] rounded-full
