@@ -350,6 +350,14 @@ const PhotographySection = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const handleLoad = () => {
+      ScrollTrigger.refresh();
+    };
+    window.addEventListener('load', handleLoad);
+    return () => window.removeEventListener('load', handleLoad);
+  }, []);
+
   const [mobileIndex, setMobileIndex] = useState(0);
   const [slideDirection, setSlideDirection] = useState<'next' | 'prev'>('next');
   const [lightboxDirection, setLightboxDirection] = useState<'next' | 'prev'>('next');
@@ -452,7 +460,7 @@ const PhotographySection = () => {
   };
 
   const handleAutoPlaySlide = () => {
-    if (isAnimatingRef.current || sliderItems.length <= 1) return;
+    if (!hasTriggeredEntranceRef.current || isAnimatingRef.current || sliderItems.length <= 1) return;
     isAnimatingRef.current = true;
     const direction = Math.random() > 0.5 ? 'next' : 'prev';
     let nextIndex = mobileIndex;
@@ -637,7 +645,10 @@ const PhotographySection = () => {
               rotation: targetRotation,
               duration: 1.2,
               ease: 'back.out(1.2)',
-              onStart: () => { hasTriggeredEntranceRef.current = true; }
+              onStart: () => { hasTriggeredEntranceRef.current = true; },
+              onComplete: () => {
+                isAnimatingRef.current = false;
+              }
             }
           );
 

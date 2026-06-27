@@ -49,18 +49,18 @@ const Hero = () => {
     <section
       id="inicio"
       ref={container}
-      className="h-screen relative flex items-center justify-center overflow-hidden"
+      className="min-h-screen h-auto lg:h-screen relative flex flex-col lg:justify-center items-center justify-start overflow-hidden bg-[#707f6a] lg:bg-transparent pt-[74px] lg:pt-0"
     >
       <video
         autoPlay loop muted playsInline
-        className="absolute inset-0 w-full h-full object-cover z-0"
+        className="relative lg:absolute lg:inset-0 w-full aspect-video lg:aspect-auto lg:h-full object-cover z-0"
       >
         <source src="/herovideo2.mp4" type="video/mp4" />
       </video>
 
-      <div className="absolute inset-0 bg-black/20 z-10" />
+      <div className="absolute inset-0 bg-black/20 z-10 hidden lg:block" />
 
-      <div className="relative z-20 text-center text-white px-4 perspective-1000">
+      <div className="relative z-20 text-center text-white px-6 py-12 lg:py-0 perspective-1000 w-full max-w-[800px] flex flex-col items-center justify-center flex-1">
 
 
         <h1 className="font-serif text-[clamp(3rem,7vw,6.5rem)] font-light italic leading-[1.08] mb-6 overflow-hidden">
