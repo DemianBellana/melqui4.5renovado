@@ -49,7 +49,7 @@ const Hero = () => {
     <section
       id="inicio"
       ref={container}
-      className="min-h-screen h-auto lg:h-screen relative flex flex-col lg:justify-center items-center justify-start overflow-hidden bg-[#707f6a] lg:bg-transparent pt-[74px] lg:pt-0"
+      className="min-h-[70vh] lg:min-h-screen h-auto relative flex flex-col lg:justify-center items-center justify-start overflow-hidden bg-[#707f6a] lg:bg-transparent pt-[74px] lg:pt-0"
     >
       <video
         autoPlay loop muted playsInline
@@ -60,7 +60,7 @@ const Hero = () => {
 
       <div className="absolute inset-0 bg-black/20 z-10 hidden lg:block" />
 
-      <div className="relative z-20 text-center text-white px-6 py-12 lg:py-0 perspective-1000 w-full max-w-[800px] flex flex-col items-center justify-center flex-1">
+      <div className="relative z-20 text-center text-white px-6 py-8 lg:py-0 perspective-1000 w-full max-w-[800px] flex flex-col items-center justify-center flex-1">
 
 
         <h1 className="font-serif text-[clamp(3rem,7vw,6.5rem)] font-light italic leading-[1.08] mb-6 overflow-hidden">

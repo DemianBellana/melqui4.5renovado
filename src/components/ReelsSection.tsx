@@ -180,17 +180,30 @@ const ReelsSection = () => {
       </div>
 
       <div className="max-w-[1200px] w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-0 items-center">
+        {/* Mobile Header (visible only on mobile/tablet, hidden on desktop) */}
+        <div className="block lg:hidden px-6 text-left md:text-center z-10 order-1">
+          <span className="text-[0.62rem] md:text-[0.82rem] font-bold tracking-[0.28em] uppercase text-[#707f6a] mb-4 block">
+            01. Edición de Reels
+          </span>
+          <h2 className="font-serif text-[clamp(2rem,3.5vw,3.2rem)] md:text-[clamp(2.5rem,4.5vw,3.8rem)] font-light leading-[1.18] text-[#161616]">
+            Contenido que conecta<br /><em className="italic text-[#8c7853]">desde el primer segundo</em>
+          </h2>
+        </div>
+
         {/* Columna Izquierda: Texto */}
         <div
           ref={textRef}
-          className="flex flex-col justify-center items-start md:items-center lg:items-start text-left md:text-center lg:text-left px-6 lg:px-20 z-10 order-2 lg:order-1"
+          className="flex flex-col justify-center items-start md:items-center lg:items-start text-left md:text-center lg:text-left px-6 lg:px-20 z-10 order-3 lg:order-1"
         >
-          <span className="text-[0.62rem] md:text-[0.82rem] lg:text-[clamp(0.8rem,_calc(0.04_*_30cqw),_0.95rem)] font-bold tracking-[0.28em] uppercase text-[#707f6a] mb-6">
-            01. Edición de Reels
-          </span>
-          <h2 className="font-serif text-[clamp(2rem,3.5vw,3.2rem)] md:text-[clamp(2.5rem,4.5vw,3.8rem)] lg:text-[clamp(2.6rem,_calc(0.165_*_30cqw),_4.2rem)] font-light leading-[1.18] text-[#161616] mb-6">
-            Contenido que conecta<br /><em className="italic text-[#8c7853]">desde el primer segundo</em>
-          </h2>
+          {/* Desktop Header (hidden on mobile, visible on desktop) */}
+          <div className="hidden lg:block">
+            <span className="text-[0.62rem] md:text-[0.82rem] lg:text-[clamp(0.8rem,_calc(0.04_*_30cqw),_0.95rem)] font-bold tracking-[0.28em] uppercase text-[#707f6a] mb-6 block">
+              01. Edición de Reels
+            </span>
+            <h2 className="font-serif text-[clamp(2rem,3.5vw,3.2rem)] md:text-[clamp(2.5rem,4.5vw,3.8rem)] lg:text-[clamp(2.6rem,_calc(0.165_*_30cqw),_4.2rem)] font-light leading-[1.18] text-[#161616] mb-6">
+              Contenido que conecta<br /><em className="italic text-[#8c7853]">desde el primer segundo</em>
+            </h2>
+          </div>
           <p className="text-[0.88rem] md:text-[1.1rem] lg:text-[clamp(1.1rem,_calc(0.058_*_30cqw),_1.3rem)] font-light leading-[1.85] text-[#161616] opacity-80 max-w-[48ch] mb-9 mx-0 md:mx-auto lg:mx-0">
             Cada reel está pensado para captar la atención, mantener el interés y transmitir un mensaje de forma clara y dinámica. Trabajo el ritmo, las transiciones, la música y la narrativa para crear videos que no solo se vean bien, sino que también generen impacto.
           </p>
@@ -200,7 +213,7 @@ const ReelsSection = () => {
         </div>
 
         {/* Columna Derecha: iPhone */}
-        <div className="relative flex items-center justify-center order-1 lg:order-2">
+        <div className="relative flex items-center justify-center order-2 lg:order-2">
           <div className="absolute w-[500px] h-[500px] bg-white/10 blur-[150px] rounded-full z-0" />
 
           <div ref={iphoneRef} className="relative z-10">

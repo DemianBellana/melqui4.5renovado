@@ -131,8 +131,18 @@ const About = () => {
         ))}
       </div>
 
+      {/* Mobile Header (visible only on mobile/tablet, hidden on desktop) */}
+      <div className="block lg:hidden px-6 text-left md:text-center z-10 order-1 pt-20">
+        <span className="text-[clamp(0.8rem,_calc(0.04_*_30cqw),_0.95rem)] font-bold tracking-[0.28em] uppercase text-[#161616] opacity-70 mb-4 block">
+          Sobre Mí
+        </span>
+        <h2 className="font-serif text-[clamp(2.6rem,_calc(0.165_*_30cqw),_4.2rem)] font-light leading-[1.18] text-[#161616]">
+          Melisa <em className="italic text-white">Quiroga</em>
+        </h2>
+      </div>
+
       {/* Columna Izquierda: iPhone CSS puro igual que VideoWork */}
-      <div className="relative flex items-center justify-center py-20 lg:py-0">
+      <div className="relative flex items-center justify-center py-10 lg:py-0 order-2 lg:order-2">
 
         <motion.div
           ref={frameRef}
@@ -275,13 +285,16 @@ const About = () => {
       </div>
 
       {/* Columna Derecha: Texto */}
-      <div className="flex flex-col justify-center items-start md:items-center lg:items-start text-left md:text-center lg:text-left px-6 py-14 lg:px-24 lg:py-24 text-[#161616] relative z-10">
-        <span className="text-[clamp(0.8rem,_calc(0.04_*_30cqw),_0.95rem)] font-bold tracking-[0.28em] uppercase text-[#161616] opacity-70 mb-6">
-          Sobre Mí
-        </span>
-        <h2 className="font-serif text-[clamp(2.6rem,_calc(0.165_*_30cqw),_4.2rem)] font-light leading-[1.18] text-[#161616] mb-8">
-          Melisa <em className="italic text-white">Quiroga</em>
-        </h2>
+      <div className="flex flex-col justify-center items-start md:items-center lg:items-start text-left md:text-center lg:text-left px-6 py-12 lg:px-24 lg:py-24 text-[#161616] relative z-10 order-3 lg:order-3">
+        {/* Desktop Header (hidden on mobile, visible on desktop) */}
+        <div className="hidden lg:block">
+          <span className="text-[clamp(0.8rem,_calc(0.04_*_30cqw),_0.95rem)] font-bold tracking-[0.28em] uppercase text-[#161616] opacity-70 mb-6 block">
+            Sobre Mí
+          </span>
+          <h2 className="font-serif text-[clamp(2.6rem,_calc(0.165_*_30cqw),_4.2rem)] font-light leading-[1.18] text-[#161616] mb-8">
+            Melisa <em className="italic text-white">Quiroga</em>
+          </h2>
+        </div>
         <div className="space-y-6">
           <p className="text-[clamp(1.05rem,_calc(0.052_*_30cqw),_1.18rem)] font-light leading-[1.8] text-[#161616] opacity-85 max-w-[52ch] mx-0 md:mx-auto lg:mx-0">
             Soy Melisa Quiroga, fotógrafa, videógrafa y editora audiovisual.
